@@ -1,0 +1,44 @@
+services:
+  # The Database Service
+  db:
+    image: mariadb:10.6
+    container_name: vtiger_db
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=vtigercrm
+      - MYSQL_USER=vtiger
+      - MYSQL_PASSWORD=vtiger_password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - vtiger_net
+
+  # The Vtiger Application Service
+  vtiger:
+    image: javanile/vtiger
+    container_name: vtiger_app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=vtiger
+      - MYSQL_PASSWORD=vtiger_password
+      - MYSQL_DATABASE=vtigercrm
+      - VT_SITE_URL=http://localhost:8080
+    depends_on:
+      - db
+    volumes:
+      - vtiger_data:/var/www/html
+    networks:
+      - vtiger_net
+
+volumes:
+  db_data:
+  vtiger_data:
+
+networks:
+  vtiger_net:
+    driver: bridge
