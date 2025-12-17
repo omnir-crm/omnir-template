@@ -1,0 +1,13 @@
+# Vtiger Configuration with secrets
+config.inc.php
+config_override.php
+
+# Generated files and logs
+logs/
+storage/
+cache/
+test/
+user_privileges/
+
+# Ignore database backups
+*.sql
