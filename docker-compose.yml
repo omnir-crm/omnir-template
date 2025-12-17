@@ -1,7 +1,7 @@
 services:
   # The Database Service
   db:
-    image: mariadb:10.6
+    image: mysql:5.7
     container_name: vtiger_db
     restart: always
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
@@ -31,13 +31,12 @@ services:
     depends_on:
       - db
     volumes:
-      - vtiger_data:/var/www/html
+      - .:/var/www/html
     networks:
       - vtiger_net
 
 volumes:
   db_data:
-  vtiger_data:
 
 networks:
   vtiger_net:
