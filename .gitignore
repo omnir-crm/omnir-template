@@ -1,13 +1,23 @@
-# Vtiger Configuration with secrets
-config.inc.php
-config_override.php
+# Local data (Managed by Docker volumes)
+db-data/
+vtiger-data/
 
-# Generated files and logs
+# The large installer file
+*.tar
+*.zip
+
+# vTiger internal dynamic files (if mapped locally)
 logs/
 storage/
 cache/
 test/
 user_privileges/
 
-# Ignore database backups
+# Security & Backups
+config.inc.php
+config_override.php
 *.sql
+
+# Windows System Files
+[Dd]esktop.ini
+Thumbs.db
