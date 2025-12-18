@@ -1,8 +1,6 @@
-# We switch to 'bullseye', which is more stable for networking on older WSL2
 FROM php:8.1-apache-bullseye
 
 # 1. Update and install only the bare essentials
-# We add --allow-releaseinfo-change to handle repository signature shifts
 RUN apt-get update --allow-releaseinfo-change && \
     apt-get install -y --no-install-recommends \
     libfreetype6-dev \
