@@ -12,7 +12,7 @@ services:
       - VT_DB_PASSWORD=vtiger_password
     volumes:
       - ./vtiger-data:/var/www/html
-      - ./vtigercrm8.4.0.tar.gz:/tmp/vtiger.tar
+      - ./vtiger8.tar:/tmp/vtiger.tar
     depends_on:
       - db
 
@@ -27,3 +27,5 @@ services:
       - MYSQL_PASSWORD=vtiger_password
     volumes:
       - ./db-data:/var/lib/mysql
+      # Automatically seeds the database for new environments
+      - ./vtiger_base_setup.sql:/docker-entrypoint-initdb.d/setup.sql

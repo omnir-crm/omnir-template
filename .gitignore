@@ -18,6 +18,9 @@ config.inc.php
 config_override.php
 *.sql
 
+# ALLOW the base setup file specifically
+!vtiger_base_setup.sql
+
 # Windows System Files
 [Dd]esktop.ini
 Thumbs.db
