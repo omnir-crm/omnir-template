@@ -24,3 +24,9 @@ config_override.php
 # Windows System Files
 [Dd]esktop.ini
 Thumbs.db
+
+# Claude
+claude.md
+.claude/
+claude-logs/
+_bmad/
