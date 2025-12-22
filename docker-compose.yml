@@ -10,11 +10,26 @@ services:
       - VT_DB_NAME=vtiger_crm
       - VT_DB_USER=vtiger_user
       - VT_DB_PASSWORD=vtiger_password
+      # Optimization for Vtiger 8.4
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_MAX_EXECUTION_TIME=600
     volumes:
       - ./vtiger-data:/var/www/html
-      - ./vtigercrm8.4.0.tar.gz:/tmp/vtiger.tar
+      # Mount the tarball into /tmp so we can extract it
+      - ./vtigercrm8.4.0.tar.gz:/tmp/vtiger.tar.gz:ro
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    # Logic: If config.inc.php doesn't exist, extract tarball, then start Apache
+    command: >
+      sh -c "
+      if [ ! -f /var/www/html/config.inc.php ]; then
+        echo 'Extracting Vtiger source code...'
+        tar -xzf /tmp/vtiger.tar.gz -C /var/www/html --strip-components=1
+        chown -R www-data:www-data /var/www/html
+      fi;
+      apache2-foreground
+      "
 
   db:
     image: mysql:5.7
@@ -27,5 +42,9 @@ services:
       - MYSQL_PASSWORD=vtiger_password
     volumes:
       - ./db-data:/var/lib/mysql
-      # Automatically seeds the database for new environments
       - ./vtiger_base_setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
