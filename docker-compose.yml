@@ -12,7 +12,7 @@ services:
       - VT_DB_PASSWORD=vtiger_password
     volumes:
       - ./vtiger-data:/var/www/html
-      - ./vtiger8.tar:/tmp/vtiger.tar
+      - ./vtigercrm8.4.0.tar.gz:/tmp/vtiger.tar
     depends_on:
       - db
 
