@@ -1,51 +1,47 @@
-FROM php:8.1-apache-bullseye
+# Using PHP 8.3 with Apache - Vtiger 8.x supports PHP 8.x
+FROM php:8.3-apache
 
-# 1. Update and install only the bare essentials
-RUN apt-get update --allow-releaseinfo-change && \
-    apt-get install -y --no-install-recommends \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
+# 1. Install system dependencies
+RUN apt-get update && apt-get install -y \
     libpng-dev \
-    libicu-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     libzip-dev \
-    libonig-dev \
+    libicu-dev \
     libxml2-dev \
     libc-client-dev \
     libkrb5-dev \
-    libcurl4-openssl-dev \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Configure and install required PHP extensions
+# 2. Configure and install PHP extensions
+# Vtiger requires imap, gd, mysqli, zip, and intl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install -j$(nproc) \
     mysqli \
     gd \
     zip \
-    bcmath \
     intl \
-    mbstring \
-    curl \
+    xml \
+    soap \
     imap \
-    && docker-php-ext-enable opcache
+    bcmath
 
-# 3. Enable Apache's rewrite module
+# 3. Set recommended PHP settings for Vtiger
+RUN { \
+    echo 'display_errors = Off'; \
+    echo 'max_execution_time = 600'; \
+    echo 'max_input_vars = 10000'; \
+    echo 'memory_limit = 512M'; \
+    echo 'post_max_size = 100M'; \
+    echo 'upload_max_filesize = 100M'; \
+    echo 'date.timezone = UTC'; \
+    } > /usr/local/etc/php/conf.d/vtiger-optimizations.ini
+
+# 4. Enable Apache rewrite module
 RUN a2enmod rewrite
 
-# 4. Set PHP limits and development settings
-RUN { \
-    echo 'file_uploads = On'; \
-    echo 'post_max_size = 256M'; \
-    echo 'upload_max_filesize = 256M'; \
-    echo 'memory_limit = 512M'; \
-    echo 'max_execution_time = 300'; \
-    echo 'display_errors = On'; \
-    echo 'error_reporting = E_ALL'; \
-    } > /usr/local/etc/php/conf.d/vtiger-php.ini
+WORKDIR /var/www/html
 
-# 5. Entrypoint configuration
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
-
-CMD ["apache2-foreground"]
+# The 'command' in docker-compose will handle the extraction and start apache
