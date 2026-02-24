@@ -8,5 +8,5 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Home_DashBoard_View extends Vtiger_DashBoard_View {
+class Home_DashBoard_View extends Vtiger_Dashboard_View {
 }

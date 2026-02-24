@@ -18,6 +18,7 @@ parameters:
         - '#Instantiated class .* not found.*#'
         - '#Function .* not found.*#'
         - '#Call to an undefined method.*#'
+        - '#Path in require_once.* is not a file or it does not exist\.#'
         - '#Path in include_once.*config_override\.php.* is not a file or it does not exist\.#'
         - '#Call to static method .* on an unknown class HTTP_Session\.#'
     bootstrapFiles:

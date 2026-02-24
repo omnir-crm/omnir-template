@@ -30,6 +30,7 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

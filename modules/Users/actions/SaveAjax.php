@@ -41,6 +41,7 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
 			}
 		}
+		return true;
 	}
 
 	protected function checkRestrictedValueChange(Vtiger_Request $request) {

@@ -57,7 +57,7 @@ class ModComments extends ModCommentsCore {
 	/**
 	 * Add widget to other module.
 	 * @param unknown_type $moduleNames
-	 * @return unknown_type
+	 * @return void
 	 */
 	static function addWidgetTo($moduleNames, $widgetType='DETAILVIEWWIDGET', $widgetName='DetailViewBlockCommentWidget') {
 		if (empty($moduleNames)) return;
@@ -89,7 +89,7 @@ class ModComments extends ModCommentsCore {
 	 * @param unknown_type $moduleNames
 	 * @param unknown_type $widgetType
 	 * @param unknown_type $widgetName
-	 * @return unknown_type
+	 * @return void
 	 */
 	static function removeWidgetFrom($moduleNames, $widgetType='DETAILVIEWWIDGET', $widgetName='DetailViewBlockCommentWidget') {
 		if (empty($moduleNames)) return;
