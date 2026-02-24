@@ -76,8 +76,8 @@ class Google_List_View extends Vtiger_PopupAjax_View {
 			if (!empty($sourceModule)) {
 				try {
 					$records = $this->invokeExposedMethod($sourceModule);
-				} catch (Zend_Gdata_App_HttpException $e) {
-					$errorCode = $e->getResponse()->getStatus();
+				} catch (Exception $e) {
+					$errorCode = $e->getCode();
 					if($errorCode == 401) {
 						$this->removeSynchronization($request);
 						$response = new Vtiger_Response();

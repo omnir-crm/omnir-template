@@ -32,8 +32,8 @@ class Google_Sync_View extends Google_List_View {
 		try {
 			$records = $this->invokeExposedMethod($sourceModule);
 			return $records;
-		} catch (Zend_Gdata_App_HttpException $e) {
-			$errorCode = $e->getResponse()->getStatus();
+		} catch (Exception $e) {
+			$errorCode = $e->getCode();
 			if($errorCode == 401) {
 				$this->removeSynchronization($request);
 				$response = new Vtiger_Response();

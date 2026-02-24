@@ -41,8 +41,8 @@ class Google_Import_Action extends Vtiger_BasicAjax_Action {
 	function import($request) {
 		try {
 			$records = $this->importContacts();
-		} catch (Zend_Gdata_App_HttpException $e) {
-			$errorCode = $e->getResponse()->getStatus();
+		} catch (Exception $e) {
+			$errorCode = $e->getCode();
 			if ($errorCode == 401) {
 				$this->removeSynchronization($request);
 				$response = new Vtiger_Response();
