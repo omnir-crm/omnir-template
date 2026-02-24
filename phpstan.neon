@@ -21,5 +21,7 @@ parameters:
         - '#Path in require_once.* is not a file or it does not exist\.#'
         - '#Path in include_once.*config_override\.php.* is not a file or it does not exist\.#'
         - '#Call to static method .* on an unknown class HTTP_Session\.#'
+        - '#Call to static method registerTaskType\(\) on an unknown class VTTaskType\.#'
+        - '#Access to constant .* on an unknown class PHPExcel_.*#'
     bootstrapFiles:
         - phpstan-bootstrap.php

@@ -1286,9 +1286,10 @@ class Vtiger_Functions {
 		$regExp = "~^(?:f|ht)tps?://~i"; // This regular expression is to detect if targetUrl which was stored in database contains
 										//http:// or https:// then it will redirect as normal if not for target http:// will prepend and then redirect
 		if (!preg_match($regExp, $targetUrl)) {
-			return header("Location:http://" . $targetUrl);
+			header("Location:http://" . $targetUrl);
+			return;
 		}
-		return header("Location:" . $targetUrl);
+		header("Location:" . $targetUrl);
 	}
 
 	/**
@@ -1349,7 +1350,7 @@ class Vtiger_Functions {
 	 * @return Boolean Returns FALSE if given string doesn't match required format.
 	 */
 	static function extractNameEmail($string) {
-		$pattern = '/([(\w+) ]+)(<)([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})(>)/is';
+		$pattern = '/([(\w+) ]+)(<)([\\w+-]+(?:\\.[\\w+-]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})(>)/is';
 		if (preg_match($pattern, $string, $matches)) {
 			return array('name' => $matches[1], 'email' => $matches[3]);
 		}

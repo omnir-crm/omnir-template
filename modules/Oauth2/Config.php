@@ -69,7 +69,7 @@ class Oauth2_Config implements ArrayAccess {
 
     public static function loadConfig($data) {
         if (!static::$singleton) {
-            static::$singleton = new static($data);
+            static::$singleton = new self($data);
         }
         return static::$singleton;
     }

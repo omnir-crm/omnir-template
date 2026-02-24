@@ -141,7 +141,7 @@ class VTScheduledReport extends Reports {
 		$vtigerMailer->Body    = $contents;
 		$vtigerMailer->ContentType = "text/html";
 
-		$baseFileName = preg_replace('/[^a-zA-Z0-9_-\s]/', '', $this->reportname).'_'. preg_replace('/[^a-zA-Z0-9_-\s]/', '', $currentTime);
+		$baseFileName = preg_replace('/[^a-zA-Z0-9_\-\s]/', '', $this->reportname).'_'. preg_replace('/[^a-zA-Z0-9_\-\s]/', '', $currentTime);
 
 		$oReportRun = ReportRun::getInstance($this->id);
 		$reportFormat = $this->scheduledFormat;
