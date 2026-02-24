@@ -383,7 +383,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 					if(!$fieldModel) {
 						$modulename = $moduleModel->get('name');
 						if($modulename == 'Calendar') {
-							$eventModuleModel = Vtiger_Module_model::getInstance('Events');
+							$eventModuleModel = Vtiger_Module_Model::getInstance('Events');
 							$fieldModel = $eventModuleModel->getField($fieldName);
 						}
 					}
@@ -653,7 +653,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				if (!$fieldModel) {
 					$modulename = $moduleModel->get('name');
 					if ($modulename == 'Calendar') {
-						$eventModuleModel = Vtiger_Module_model::getInstance('Events');
+						$eventModuleModel = Vtiger_Module_Model::getInstance('Events');
 						$fieldModel = $eventModuleModel->getField($fieldName);
 					}
 				}

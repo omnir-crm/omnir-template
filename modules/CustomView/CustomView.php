@@ -972,7 +972,7 @@ class CustomView extends CRMEntity {
 					if (!$fieldModel) {
 						$modulename = $moduleModel->get('name');
 						if ($modulename == 'Calendar') {
-							$eventModuleModel = Vtiger_Module_model::getInstance('Events');
+							$eventModuleModel = Vtiger_Module_Model::getInstance('Events');
 							$fieldModel = $eventModuleModel->getField($fieldName);
 						}
 					}

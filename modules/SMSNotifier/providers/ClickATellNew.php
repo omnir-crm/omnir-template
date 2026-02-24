@@ -116,7 +116,7 @@ class SMSNotifier_ClickATellNew_Provider implements SMSNotifier_ISMSProvider_Mod
         $httpClient = new Vtiger_Net_Client($this->getServiceURL());
         $httpClient->setHeaders($headers);
         $response = $httpClient->doPost(json_encode($messageParams));
-        $decodedResponse = Zend_JSON::decode($response);
+        $decodedResponse = Zend_Json::decode($response);
         $results = array();
 
         foreach ($decodedResponse['messages'] as $index => $responseMessage) {
