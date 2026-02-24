@@ -22,6 +22,7 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

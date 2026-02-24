@@ -23,6 +23,7 @@ class Calendar_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

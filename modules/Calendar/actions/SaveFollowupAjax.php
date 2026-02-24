@@ -23,6 +23,7 @@ class Calendar_SaveFollowupAjax_Action extends Calendar_SaveAjax_Action {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		return true;
 	}
 
     function __construct() {

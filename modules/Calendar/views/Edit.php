@@ -29,6 +29,7 @@ Class Calendar_Edit_View extends Vtiger_Edit_View {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		return true;
 	}
 
 	function process(Vtiger_Request $request) {
