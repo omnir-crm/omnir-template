@@ -533,10 +533,10 @@ class Leads extends CRMEntity {
 					"Products"=>"vtiger_seproductsrel","Campaigns"=>"vtiger_campaignleadrel","Emails"=>"vtiger_seactivityrel");
 
 		$tbl_field_arr = Array("vtiger_seactivityrel"=>"activityid","vtiger_senotesrel"=>"notesid","vtiger_seattachmentsrel"=>"attachmentsid",
-					"vtiger_seproductsrel"=>"productid","vtiger_campaignleadrel"=>"campaignid","vtiger_seactivityrel"=>"activityid");
+					"vtiger_seproductsrel"=>"productid","vtiger_campaignleadrel"=>"campaignid");
 
 		$entity_tbl_field_arr = Array("vtiger_seactivityrel"=>"crmid","vtiger_senotesrel"=>"crmid","vtiger_seattachmentsrel"=>"crmid",
-					"vtiger_seproductsrel"=>"crmid","vtiger_campaignleadrel"=>"leadid","vtiger_seactivityrel"=>"crmid");
+					"vtiger_seproductsrel"=>"crmid","vtiger_campaignleadrel"=>"leadid");
 
 		foreach($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {

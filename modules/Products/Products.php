@@ -1156,11 +1156,11 @@ class Products extends CRMEntity {
 				"Documents"=>"vtiger_senotesrel",'Assets'=>'vtiger_assets',);
 
 		$tbl_field_arr = Array("vtiger_troubletickets"=>"ticketid","vtiger_seproductsrel"=>"crmid","vtiger_seattachmentsrel"=>"attachmentsid",
-				"vtiger_inventoryproductrel"=>"id","vtiger_pricebookproductrel"=>"pricebookid","vtiger_seproductsrel"=>"crmid",
+				"vtiger_inventoryproductrel"=>"id","vtiger_pricebookproductrel"=>"pricebookid",
 				"vtiger_senotesrel"=>"notesid",'vtiger_assets'=>'assetsid');
 
 		$entity_tbl_field_arr = Array("vtiger_troubletickets"=>"product_id","vtiger_seproductsrel"=>"crmid","vtiger_seattachmentsrel"=>"crmid",
-				"vtiger_inventoryproductrel"=>"productid","vtiger_pricebookproductrel"=>"productid","vtiger_seproductsrel"=>"productid",
+				"vtiger_inventoryproductrel"=>"productid","vtiger_pricebookproductrel"=>"productid",
 				"vtiger_senotesrel"=>"crmid",'vtiger_assets'=>'product');
 
 		foreach($transferEntityIds as $transferId) {
@@ -1258,7 +1258,7 @@ class Products extends CRMEntity {
 			"Accounts" => array("vtiger_seproductsrel"=>array("productid","crmid"),"vtiger_products"=>"productid"),
 			"Contacts" => array("vtiger_seproductsrel"=>array("productid","crmid"),"vtiger_products"=>"productid"),
 			"Potentials" => array("vtiger_seproductsrel"=>array("productid","crmid"),"vtiger_products"=>"productid"),
-			"Products" => array("vtiger_products"=>array("productid","product_id"),"vtiger_products"=>"productid"),
+			"Products" => array("vtiger_products"=>array("productid","product_id")),
 			"PriceBooks" => array("vtiger_pricebookproductrel"=>array("productid","pricebookid"),"vtiger_products"=>"productid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_products"=>"productid"),
 		);
