@@ -11,3 +11,7 @@ config.inc.php
 config.csrf-secret.php
 *.tar.gz
 *.sql
+
+# PHPStan and composer files
+phpstan-output.json
+composer
