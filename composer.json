@@ -26,5 +26,8 @@
         "league/oauth2-client": "^2.7",
         "phpmailer/phpmailer": "^6.9",
         "league/oauth2-google": "^4.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1"
     }
 }
