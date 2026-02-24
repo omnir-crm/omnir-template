@@ -98,7 +98,7 @@ class Mobile_APIV1_Controller {
 	}
 
 	static function getInstance() {
-		$instance = new static();
+		$instance = new self();
 		return $instance;
 	}
 }
