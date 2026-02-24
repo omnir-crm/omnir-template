@@ -1,47 +1,43 @@
-# Using PHP 8.3 with Apache - Vtiger 8.x supports PHP 8.x
-FROM php:8.3-apache
+FROM php:8.1-apache-bullseye
 
-# 1. Install system dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
+# The --allow-releaseinfo-change flag fixes the Exit Code 100 on older Debian bases
+RUN apt-get update --allow-releaseinfo-change && \
+    apt-get install -y --no-install-recommends \
     libfreetype6-dev \
-    libzip-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
     libicu-dev \
+    libzip-dev \
+    libonig-dev \
     libxml2-dev \
     libc-client-dev \
     libkrb5-dev \
+    libcurl4-openssl-dev \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Configure and install PHP extensions
-# Vtiger requires imap, gd, mysqli, zip, and intl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install -j$(nproc) \
     mysqli \
     gd \
     zip \
+    bcmath \
     intl \
-    xml \
-    soap \
+    mbstring \
+    curl \
     imap \
-    bcmath
+    && docker-php-ext-enable opcache
 
-# 3. Set recommended PHP settings for Vtiger
+# Add the vTiger specific PHP configurations to fix the red warnings
 RUN { \
     echo 'display_errors = Off'; \
-    echo 'max_execution_time = 600'; \
-    echo 'max_input_vars = 10000'; \
+    echo 'file_uploads = On'; \
+    echo 'post_max_size = 256M'; \
+    echo 'upload_max_filesize = 256M'; \
     echo 'memory_limit = 512M'; \
-    echo 'post_max_size = 100M'; \
-    echo 'upload_max_filesize = 100M'; \
+    echo 'max_execution_time = 300'; \
     echo 'date.timezone = UTC'; \
-    } > /usr/local/etc/php/conf.d/vtiger-optimizations.ini
+    } > /usr/local/etc/php/conf.d/vtiger-php.ini
 
-# 4. Enable Apache rewrite module
 RUN a2enmod rewrite
-
-WORKDIR /var/www/html
-
-# The 'command' in docker-compose will handle the extraction and start apache

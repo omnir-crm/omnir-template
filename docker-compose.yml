@@ -3,48 +3,27 @@ services:
     build: .
     container_name: omnir_crm_app
     restart: always
+    user: "1000:1000"
     ports:
       - "8080:80"
     environment:
       - VT_DB_HOST=db
-      - VT_DB_NAME=vtiger_crm
-      - VT_DB_USER=vtiger_user
-      - VT_DB_PASSWORD=vtiger_password
-      # Optimization for Vtiger 8.4
-      - PHP_MEMORY_LIMIT=512M
-      - PHP_MAX_EXECUTION_TIME=600
+      - VT_DB_NAME=teamguy2000
+      - VT_DB_USER=teamguy2000
+      - VT_DB_PASSWORD=teamguy2000
     volumes:
-      - ./vtiger-data:/var/www/html
-      # Mount the tarball into /tmp so we can extract it
-      - ./vtigercrm8.4.0.tar.gz:/tmp/vtiger.tar.gz:ro
+      - .:/var/www/html
     depends_on:
-      db:
-        condition: service_healthy
-    # Logic: If config.inc.php doesn't exist, extract tarball, then start Apache
-    command: >
-      sh -c "
-      if [ ! -f /var/www/html/config.inc.php ]; then
-        echo 'Extracting Vtiger source code...'
-        tar -xzf /tmp/vtiger.tar.gz -C /var/www/html --strip-components=1
-        chown -R www-data:www-data /var/www/html
-      fi;
-      apache2-foreground
-      "
+      - db
 
   db:
     image: mysql:5.7
     container_name: omnir_crm_db
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=root_password
-      - MYSQL_DATABASE=vtiger_crm
-      - MYSQL_USER=vtiger_user
-      - MYSQL_PASSWORD=vtiger_password
+      - MYSQL_ROOT_PASSWORD=teamguy2000
+      - MYSQL_DATABASE=teamguy2000
+      - MYSQL_USER=teamguy2000
+      - MYSQL_PASSWORD=teamguy2000
     volumes:
       - ./db-data:/var/lib/mysql
-      - ./vtiger_base_setup.sql:/docker-entrypoint-initdb.d/setup.sql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
