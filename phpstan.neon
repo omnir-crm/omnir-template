@@ -23,5 +23,6 @@ parameters:
         - '#Call to static method .* on an unknown class HTTP_Session\.#'
         - '#Call to static method registerTaskType\(\) on an unknown class VTTaskType\.#'
         - '#Access to constant .* on an unknown class PHPExcel_.*#'
+        - '#.*extends unknown class Vtiger_InventoryPDFController\.#'
     bootstrapFiles:
         - phpstan-bootstrap.php

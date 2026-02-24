@@ -76,7 +76,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 		$viewer->assign('CURRENT_LANGUAGE', vglobal('default_language'));
-		$viewer->assign('LANGUAGES', Install_Utils_model::getLanguageList());
+		$viewer->assign('LANGUAGES', Install_Utils_Model::getLanguageList());
 		$viewer->view('Step1.tpl', $moduleName);
 	}
 

@@ -232,7 +232,7 @@ class XML_HTMLSax3_StateParser {
     * @return string
     * @abstract
     */
-    function scanUntilCharacters($string) {}
+    function scanUntilCharacters($string) { return ''; }
 
     /**
     * Moves the position forward past any whitespace characters

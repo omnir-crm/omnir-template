@@ -287,7 +287,7 @@ class Reports_List_View extends Vtiger_Index_View {
 
 	/**
 	 * Function to get the page count for list
-	 * @return total number of pages
+	 * @return void
 	 */
 	function getPageCount(Vtiger_Request $request){
 		$listViewCount = $this->getListViewCount($request);

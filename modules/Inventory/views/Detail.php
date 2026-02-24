@@ -27,7 +27,7 @@ class Inventory_Detail_View extends Vtiger_Detail_View {
 	/**
 	 * Function returns Inventory details
 	 * @param Vtiger_Request $request
-	 * @return type
+	 * @return void
 	 */
 	function showDetailViewByMode(Vtiger_Request $request) {
 		$requestMode = $request->get('requestMode');

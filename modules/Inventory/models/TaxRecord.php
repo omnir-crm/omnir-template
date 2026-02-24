@@ -125,7 +125,7 @@ class Inventory_TaxRecord_Model extends Vtiger_Base_Model {
 	 * @param string $taxlabel - tax label name to be added
 	 * @param string $taxvalue - tax value to be added
 	 * @param string $sh - sh or empty , if sh passed then the tax will be added in shipping and handling related table
-	 * @return void
+	 * @return int|string
 	*/
 	public function addTax() {
 		$adb = PearDatabase::getInstance();

@@ -206,6 +206,7 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 			$recordlabels = getEntityName($modulename, array($crmid));
 			return self::buildDetailViewLink($modulename, $crmid, $recordlabels[$crmid]);
 		}
+		return array();
 	}
 
 	/**

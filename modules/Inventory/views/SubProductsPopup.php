@@ -240,7 +240,7 @@ class Inventory_SubProductsPopup_View extends Vtiger_Popup_View {
 
 	/**
 	 * Function to get the page count for list
-	 * @return total number of pages
+	 * @return void
 	 */
 	function getPageCount(Vtiger_Request $request){
 		$listViewCount = $this->getListViewCount($request);

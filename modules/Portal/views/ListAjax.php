@@ -51,7 +51,7 @@ class Portal_ListAjax_View extends Vtiger_List_View {
 
 	/**
 	 * Function to get the page count for list
-	 * @return total number of pages
+	 * @return void
 	 */
 	function getPageCount(Vtiger_Request $request) {
 		$listViewCount = $this->getListViewCount($request);

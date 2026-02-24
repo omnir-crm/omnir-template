@@ -102,4 +102,9 @@ class Import_Map_Model extends Vtiger_Base_Model {
 		return $savedMaps;
 	}
 
+	public static function updateMap($mapId, $mapping) {
+		$db = PearDatabase::getInstance();
+		$db->updateBlob(self::$tableName, "content", "id='".$db->sql_escape_string($mapId)."'", $mapping);
+	}
+
 }

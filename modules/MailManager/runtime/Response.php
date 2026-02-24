@@ -16,8 +16,8 @@ class MailManager_Response extends Vtiger_Response {
 	 * Emit response wrapper as JSONString
 	 */
 	protected function emitJSON() {
-		require_once 'include/Zend/Json/Encoder.php';
-		echo Zend_Json_Encoder::encode($this->prepareResponse(), false);
+		require_once 'include/Zend/Json.php';
+		echo Zend_Json::encode($this->prepareResponse(), false);
 	}
 
 }
