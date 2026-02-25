@@ -1,6 +1,6 @@
 FROM php:8.1-apache-bullseye
 
-# The --allow-releaseinfo-change flag fixes the Exit Code 100 on older Debian bases
+# Fixes Exit Code 100 on older Debian bases
 RUN apt-get update --allow-releaseinfo-change && \
     apt-get install -y --no-install-recommends \
     libfreetype6-dev \
@@ -29,7 +29,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     imap \
     && docker-php-ext-enable opcache
 
-# Add the vTiger specific PHP configurations to fix the red warnings
+# Professional PHP configurations for vTiger
 RUN { \
     echo 'display_errors = Off'; \
     echo 'file_uploads = On'; \

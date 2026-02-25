@@ -8,9 +8,9 @@ services:
       - "8080:80"
     environment:
       - VT_DB_HOST=db
-      - VT_DB_NAME=teamguy2000
-      - VT_DB_USER=teamguy2000
-      - VT_DB_PASSWORD=teamguy2000
+      - VT_DB_NAME=${DB_NAME}
+      - VT_DB_USER=${DB_USER}
+      - VT_DB_PASSWORD=${DB_PASSWORD}
     volumes:
       - .:/var/www/html
     depends_on:
@@ -23,9 +23,9 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=teamguy2000
-      - MYSQL_DATABASE=teamguy2000
-      - MYSQL_USER=teamguy2000
-      - MYSQL_PASSWORD=teamguy2000
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
     volumes:
       - ./db-data:/var/lib/mysql

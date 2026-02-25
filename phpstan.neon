@@ -1,0 +1,41 @@
+parameters:
+    level: 0
+    paths:
+        - includes
+        - modules
+        - vtlib
+    fileExtensions:
+        - php
+        - inc
+    excludePaths:
+        - vendor/
+        - cache/
+        - test/
+        - pkg/
+        - modules/Users/actions/ForgotPassword.php
+        - modules/Invoice/InvoicePDFController.php
+        - modules/PurchaseOrder/PurchaseOrderPDFController.php
+        - modules/Quotes/QuotePDFController.php
+        - modules/SalesOrder/SalesOrderPDFController.php
+        - modules/Home/views/DashBoard.php
+        - modules/SMSNotifier/workflow/VTSMSTask.php
+    scanDirectories:
+        - include
+        - libraries
+        - vtlib/thirdparty
+    ignoreErrors:
+        - '#Undefined variable.*#'
+        - '#Access to an undefined property.*#'
+        - '#Class .* does not have a constructor#'
+        - '#Access to static property .* on an unknown class.*#'
+        - '#Instantiated class .* not found.*#'
+        - '#Function .* not found.*#'
+        - '#Call to an undefined method.*#'
+        - '#Path in require_once.* is not a file or it does not exist\.#'
+        - '#Path in include_once.*config_override\.php.* is not a file or it does not exist\.#'
+        - '#Call to static method .* on an unknown class HTTP_Session\.#'
+        - '#Call to static method registerTaskType\(\) on an unknown class VTTaskType\.#'
+        - '#.* on an unknown class PHPExcel_.*#'
+        - '#Class .* extends unknown class Vtiger_InventoryPDFController\.#'
+    bootstrapFiles:
+        - phpstan-bootstrap.php
