@@ -8,20 +8,25 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Users_BasicAjax_Action extends Vtiger_BasicAjax_Action {
+class Users_BasicAjax_Action extends Vtiger_BasicAjax_Action
+{
 
-	public function requiresPermission(\Vtiger_Request $request) {
+	public function requiresPermission(\Vtiger_Request $request)
+	{
 		return array();
 	}
-    
-    function checkPermission(Vtiger_Request $request) {
+
+	function checkPermission(Vtiger_Request $request)
+	{
 		$currentUser = Users_Record_Model::getCurrentUserModel();
-		if(!$currentUser->isAdminUser()) {
+		if (!$currentUser->isAdminUser()) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$searchValue = $request->get('search_value');
 		$searchModule = $request->get('search_module');
 
@@ -33,10 +38,10 @@ class Users_BasicAjax_Action extends Vtiger_BasicAjax_Action {
 
 		$baseRecordId = $request->get('base_record');
 		$result = array();
-		foreach($records as $moduleName=>$recordModels) {
-			foreach($recordModels as $recordModel) {
-				if($recordModel->getId() != $baseRecordId) {
-					$result[] = array('label'=>decode_html($recordModel->getName()), 'value'=>decode_html($recordModel->getName()), 'id'=>$recordModel->getId());
+		foreach ($records as $moduleName => $recordModels) {
+			foreach ($recordModels as $recordModel) {
+				if ($recordModel->getId() != $baseRecordId) {
+					$result[] = array('label' => decode_html($recordModel->getName()), 'value' => decode_html($recordModel->getName()), 'id' => $recordModel->getId());
 				}
 			}
 		}

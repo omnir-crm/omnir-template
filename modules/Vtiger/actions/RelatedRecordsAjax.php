@@ -8,20 +8,24 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller {
+class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller
+{
 	var $relationModules = array();
-	function __construct() {
+	function __construct()
+	{
 		parent::__construct();
 		$this->exposeMethod('getRelatedRecordsCount');
 	}
 
-	public function requiresPermission(\Vtiger_Request $request) {
+	public function requiresPermission(\Vtiger_Request $request)
+	{
 		$permissions = parent::requiresPermission($request);
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'recordId');
 		return $permissions;
 	}
-	
-	function checkPermission(Vtiger_Request $request) {
+
+	function checkPermission(Vtiger_Request $request)
+	{
 		parent::checkPermission($request);
 		$parentModule = $request->get("module");
 		$parentModuleModel = Vtiger_Module_Model::getInstance($parentModule);
@@ -29,16 +33,18 @@ class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller {
 		foreach ($relationModels as $relation) {
 			$relatedModuleName = $relation->get('relatedModuleName');
 			$permissionStatus  = Users_Privileges_Model::isPermitted($relatedModuleName,  'DetailView');
-			if($permissionStatus){
+			if ($permissionStatus) {
 				$this->relationModules[] = $relation;
 			}
 		}
-		if(empty($this->relationModules)){
+		if (empty($this->relationModules)) {
 			throw new AppException(vtranslate('LBL_RELATED_MODULES_PERMISSION_DENIED'));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$mode = $request->get('mode');
 		if (!empty($mode)) {
 			$this->invokeExposedMethod($mode, $request);
@@ -50,7 +56,8 @@ class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller {
 	 * Function to get count of all related module records of a given record
 	 * @param type $request
 	 */
-	function getRelatedRecordsCount($request) {
+	function getRelatedRecordsCount($request)
+	{
 		$parentRecordId = $request->getForSql("recordId");
 		$parentModule = $request->get("module");
 		$parentModuleModel = Vtiger_Module_Model::getInstance($parentModule);
@@ -68,5 +75,4 @@ class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller {
 		$response->setResult($relatedRecordsCount);
 		$response->emit();
 	}
-
 }

@@ -9,23 +9,29 @@
  * ***********************************************************************************/
 require_once 'modules/WSAPP/WSAPPLogs.php';
 
-class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
+class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller
+{
 
-	public function requiresPermission(\Vtiger_Request $request) {
+	public function requiresPermission(\Vtiger_Request $request)
+	{
 		$permissions = parent::requiresPermission($request);
 		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
 		$request->set('custom_module', 'WSAPP');
 		return $permissions;
 	}
-	
-	public function checkPermission(Vtiger_Request $request) {
+
+	public function checkPermission(Vtiger_Request $request)
+	{
 		parent::checkPermission($request);
+		return true;
 	}
-	function preProcess(Vtiger_Request $request, $display=true) {
+	function preProcess(Vtiger_Request $request, $display = true)
+	{
 		return false;
 	}
 
-	function postProcess(Vtiger_Request $request) {
+	function postProcess(Vtiger_Request $request)
+	{
 		return false;
 	}
 
@@ -35,7 +41,8 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 	 * @param <array> $logDetails
 	 * @return <array> $data
 	 */
-	function convertLogDetailsToUserFormat($logDetails, $moduleName) {
+	function convertLogDetailsToUserFormat($logDetails, $moduleName)
+	{
 		$db = PearDatabase::getInstance();
 		$data = array();
 		$data[0]['module'] = vtranslate('LBL_SOURCE_MODULE');
@@ -43,7 +50,7 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 		$i = 1;
 		foreach ($logDetails as $logId) {
 			if (!is_numeric($logId)) {
-				list ($moduleId, $recordId) = explode('x', $logId);
+				list($moduleId, $recordId) = explode('x', $logId);
 				if ($logId && $moduleId) {
 					$wsObject = VtigerWebserviceObject::fromId($db, $moduleId);
 					$moduleName = $wsObject->getEntityName();
@@ -65,7 +72,8 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 		return $data;
 	}
 
-	function process(Vtiger_request $request) {
+	function process(Vtiger_request $request)
+	{
 		$logId = $request->get('logid');
 		$type = $request->get('type');
 		$this->getCSV($logId, $type);
@@ -74,11 +82,12 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 	/**
 	 * Function exports log data into a csv file
 	 */
-	function getCSV($logId, $type) {
+	function getCSV($logId, $type)
+	{
 		$logData = WSAPP_Logs::getSyncCountDetails($logId);
 		$sourceModule = WSAPP_Logs::getModuleFromLogId($logId);
 		if ($type == 'app_skip' || $type == 'vt_skip') {
-			$data = json_decode(decode_html($logData[$type.'_info'], true));
+			$data = json_decode(decode_html($logData[$type . '_info'], true));
 			$i = 1;
 			$tmpData = array();
 			$tmpData[0]['module'] = vtranslate('LBL_SOURCE_MODULE');
@@ -95,14 +104,14 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 			}
 			$data = $tmpData;
 		} else {
-			$data = json_decode(decode_html($logData[$type.'_ids'], true));
+			$data = json_decode(decode_html($logData[$type . '_ids'], true));
 			$data = $this->convertLogDetailsToUserFormat($data, $sourceModule);
 		}
 
 		$rootDirectory = vglobal('root_directory');
 		$tmpDir = vglobal('tmp_dir');
 
-		$tempFileName = tempnam($rootDirectory.$tmpDir, 'csv');
+		$tempFileName = tempnam($rootDirectory . $tmpDir, 'csv');
 		$this->writeToCSVFile($tempFileName, $data);
 		$fileName = 'ExtensionLog.csv';
 
@@ -115,14 +124,15 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 		$fileSize = @filesize($tempFileName) + 8;
 		header('Content-Encoding: UTF-8');
 		header('Content-type: text/csv; charset=UTF-8');
-		header('Content-Length: '.$fileSize);
-		header('Content-disposition: attachment; filename="'.$fileName.'"');
+		header('Content-Length: ' . $fileSize);
+		header('Content-disposition: attachment; filename="' . $fileName . '"');
 
 		$fp = fopen($tempFileName, 'rb');
 		fpassthru($fp);
 	}
 
-	function writeToCSVFile($fileName, $data) {
+	function writeToCSVFile($fileName, $data)
+	{
 		$arr_val = $data;
 
 		$fp = fopen($fileName, 'w+');
@@ -136,5 +146,4 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 
 		fclose($fp);
 	}
-
 }

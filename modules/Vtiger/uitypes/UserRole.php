@@ -8,13 +8,15 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Vtiger_UserRole_UIType extends Vtiger_Base_UIType {
+class Vtiger_UserRole_UIType extends Vtiger_Base_UIType
+{
 
 	/**
 	 * Function to get the Template name for the current UI Type object
 	 * @return <String> - Template Name
 	 */
-	public function getTemplateName() {
+	public function getTemplateName()
+	{
 		return 'uitypes/UserRole.tpl';
 	}
 
@@ -23,11 +25,13 @@ class Vtiger_UserRole_UIType extends Vtiger_Base_UIType {
 	 * @param <Integer> crmid of record
 	 * @return <String>
 	 */
-	public function getEditViewDisplayValue($value) {
-		if($value) {
+	public function getEditViewDisplayValue($value)
+	{
+		if ($value) {
 			$userName = getRoleName($value);
 			return $userName;
 		}
+		return '';
 	}
 
 	/**
@@ -36,18 +40,20 @@ class Vtiger_UserRole_UIType extends Vtiger_Base_UIType {
 	 * @param <Number> $recordId
 	 * @return <String> display value
 	 */
-	public function getDisplayValue($value, $recordId=false, $recordInstance=false) {
+	public function getDisplayValue($value, $recordId = false, $recordInstance = false)
+	{
 		$displayValue = $this->getEditViewDisplayValue($value);
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		if ($currentUserModel->isAdminUser()) {
 			$roleRecordModel = new Settings_Roles_Record_Model();
 			$roleRecordModel->set('roleid', $value);
-			return '<a href="'. $roleRecordModel->getEditViewUrl() .'">'. textlength_check($displayValue) .'</a>';
+			return '<a href="' . $roleRecordModel->getEditViewUrl() . '">' . textlength_check($displayValue) . '</a>';
 		}
 		return $displayValue;
 	}
 
-	public function getListSearchTemplateName() {
+	public function getListSearchTemplateName()
+	{
 		return 'uitypes/UserRoleFieldSearchView.tpl';
 	}
 }

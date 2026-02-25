@@ -8,18 +8,22 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Users_DeleteImage_Action extends Vtiger_Action_Controller {
+class Users_DeleteImage_Action extends Vtiger_Action_Controller
+{
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$record = $request->get('id');
 
 		if (!(Users_Privileges_Model::isPermitted($moduleName, 'EditView', $record) && Users_Privileges_Model::isPermitted($moduleName, 'Delete', $record))) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 		$imageId = $request->get('imageid');

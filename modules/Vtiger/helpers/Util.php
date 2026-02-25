@@ -8,7 +8,8 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Vtiger_Util_Helper {
+class Vtiger_Util_Helper
+{
 	/**
 	 * Function used to transform mulitiple uploaded file information into useful format.
 	 * @param array $_files - ex: array( 'file' => array('name'=> array(0=>'name1',1=>'name2'),
@@ -21,29 +22,30 @@ class Vtiger_Util_Helper {
 	 */
 	private static $_transformedFile = false;
 
-	public static function transformUploadedFiles(array $_files, $top = TRUE) {
-		if(self::$_transformedFile) return $_files;
+	public static function transformUploadedFiles(array $_files, $top = TRUE)
+	{
+		if (self::$_transformedFile) return $_files;
 		$files = array();
-		foreach($_files as $name=>$file) {
+		foreach ($_files as $name => $file) {
 			if ($file['name']) {
-			if($top) $subName = $file['name'];
-			 else	$subName = $name;
+				if ($top) $subName = $file['name'];
+				else	$subName = $name;
 
-			 if(is_array($subName)) {
-				 foreach(array_keys($subName) as $key) {
-					$files[$name][$key] = array(
-							 'name'     => $file['name'][$key],
-							 'type'     => $file['type'][$key],
-							 'tmp_name' => $file['tmp_name'][$key],
-							 'error'    => $file['error'][$key],
-							 'size'     => $file['size'][$key],
-					 );
-					 $files[$name] = self::transformUploadedFiles($files[$name], FALSE);
+				if (is_array($subName)) {
+					foreach (array_keys($subName) as $key) {
+						$files[$name][$key] = array(
+							'name'     => $file['name'][$key],
+							'type'     => $file['type'][$key],
+							'tmp_name' => $file['tmp_name'][$key],
+							'error'    => $file['error'][$key],
+							'size'     => $file['size'][$key],
+						);
+						$files[$name] = self::transformUploadedFiles($files[$name], FALSE);
+					}
+				} else {
+					$files[$name] = $file;
 				}
-			}else {
-				$files[$name] = $file;
 			}
-		 }
 		}
 		self::$_transformedFile = true;
 		return $files;
@@ -54,12 +56,13 @@ class Vtiger_Util_Helper {
 	 * @param <Date Time> $dateTime
 	 * @return <String>
 	 */
-	public static function formatDateDiffInStrings($dateTime, $isUserFormat = FALSE) {
-		try{
+	public static function formatDateDiffInStrings($dateTime, $isUserFormat = FALSE)
+	{
+		try {
 			// http://www.php.net/manual/en/datetime.diff.php#101029
 			$currentDateTime = date('Y-m-d H:i:s');
 
-			if($isUserFormat) {
+			if ($isUserFormat) {
 				$dateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($dateTime);
 			}
 			$seconds =  strtotime($currentDateTime) - strtotime($dateTime);
@@ -67,27 +70,27 @@ class Vtiger_Util_Helper {
 			if ($seconds == 0) return vtranslate('LBL_JUSTNOW');
 			if ($seconds > 0) {
 				$prefix = '';
-				$suffix = ' '. vtranslate('LBL_AGO');
+				$suffix = ' ' . vtranslate('LBL_AGO');
 			} else if ($seconds < 0) {
 				$prefix = vtranslate('LBL_DUE') . ' ';
 				$suffix = '';
-				$seconds = -($seconds);
+				$seconds = - ($seconds);
 			}
 
-			$minutes = floor($seconds/60);
-			$hours = floor($minutes/60);
-			$days = floor($hours/24);
-			$months = floor($days/30);
+			$minutes = floor($seconds / 60);
+			$hours = floor($minutes / 60);
+			$days = floor($hours / 24);
+			$months = floor($days / 30);
 
 			if ($seconds < 60)	return $prefix . self::pluralize($seconds,	"LBL_SECOND") . $suffix;
 			if ($minutes < 60)	return $prefix . self::pluralize($minutes,	"LBL_MINUTE") . $suffix;
 			if ($hours < 24)	return $prefix . self::pluralize($hours,	"LBL_HOUR") . $suffix;
 			if ($days < 30)		return $prefix . self::pluralize($days,		"LBL_DAY") . $suffix;
 			if ($months < 12)	return $prefix . self::pluralize($months,	"LBL_MONTH") . $suffix;
-			if ($months > 11)	return $prefix . self::pluralize(floor($days/365), "LBL_YEAR") . $suffix;
-		}catch(Exception $e){
+			if ($months > 11)	return $prefix . self::pluralize(floor($days / 365), "LBL_YEAR") . $suffix;
+		} catch (Exception $e) {
 			//Not handling if failed to parse
-		}	
+		}
 	}
 
 	/**
@@ -96,14 +99,16 @@ class Vtiger_Util_Helper {
 	 * @param <String> $text
 	 * @return <String>
 	 */
-	public static function pluralize($count, $text) {
-		return $count ." ". (($count == 1) ? vtranslate("$text") : vtranslate("{$text}S"));
+	public static function pluralize($count, $text)
+	{
+		return $count . " " . (($count == 1) ? vtranslate("$text") : vtranslate("{$text}S"));
 	}
 
 	/**
 	 * Function to make the input safe to be used as HTML
 	 */
-	public static function toSafeHTML($input) {
+	public static function toSafeHTML($input)
+	{
 		global $default_charset;
 		return $input ? htmlentities($input, ENT_QUOTES, $default_charset) : $input;
 	}
@@ -113,7 +118,8 @@ class Vtiger_Util_Helper {
 	 * @param <String> $input - html data
 	 * @return <String> vtiger6 displayable data
 	 */
-	public static function toVtiger6SafeHTML($input) {
+	public static function toVtiger6SafeHTML($input)
+	{
 		$allowableTags = '<a><br>';
 		return strip_tags((string) $input, $allowableTags);
 	}
@@ -124,7 +130,8 @@ class Vtiger_Util_Helper {
 	 * @return <String>
 	 * @throws AppException
 	 */
-	public static function validateStringForSql($string, $skipEmpty=true) {
+	public static function validateStringForSql($string, $skipEmpty = true)
+	{
 		if (vtlib_purifyForSql($string, $skipEmpty)) {
 			return $string;
 		}
@@ -136,7 +143,8 @@ class Vtiger_Util_Helper {
 	 * @param <type> $recordId - module recordId
 	 * returns 1 if record exists else 0
 	 */
-	public static function checkRecordExistance($recordId){
+	public static function checkRecordExistance($recordId)
+	{
 		global $adb;
 		$query = 'Select deleted from vtiger_crmentity where crmid=?';
 		$result = $adb->pquery($query, array($recordId));
@@ -149,14 +157,15 @@ class Vtiger_Util_Helper {
 	 * @param <Time> $time
 	 * @return <String>
 	 */
-	public static function formatDateIntoStrings($date, $time = false) {
+	public static function formatDateIntoStrings($date, $time = false)
+	{
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($date . ' ' . $time);
 
 		list($dateInUserFormat, $timeInUserFormat) = explode(' ', $dateTimeInUserFormat);
 		list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
 
-		$displayTime = $hours .':'. $minutes;
+		$displayTime = $hours . ':' . $minutes;
 		if ($currentUser->get('hour_format') === '12') {
 			$displayTime = Vtiger_Time_UIType::getTimeValueInAMorPM($displayTime);
 		}
@@ -167,12 +176,12 @@ class Vtiger_Util_Helper {
 		if ($dateInUserFormat == $today) {
 			$formatedDate = vtranslate('LBL_TODAY');
 			if ($time) {
-				$formatedDate .= ' '. vtranslate('LBL_AT') .' '. $displayTime;
+				$formatedDate .= ' ' . vtranslate('LBL_AT') . ' ' . $displayTime;
 			}
 		} elseif ($dateInUserFormat == $tomorrow) {
 			$formatedDate = vtranslate('LBL_TOMORROW');
 			if ($time) {
-				$formatedDate .= ' '. vtranslate('LBL_AT') .' '. $displayTime;
+				$formatedDate .= ' ' . vtranslate('LBL_AT') . ' ' . $displayTime;
 			}
 		} else {
 			/**
@@ -182,19 +191,19 @@ class Vtiger_Util_Helper {
 			 */
 			if ($currentUser->get('date_format') === 'mm-dd-yyyy') {
 				$dateInUserFormat = str_replace('-', '/', $dateInUserFormat);
-			} else if ($currentUser->get('date_format') === 'dd/mm/yyyy'){
+			} else if ($currentUser->get('date_format') === 'dd/mm/yyyy') {
 				// strtotime expects m/d/y format - adjusting the format to make it friendly to its convention
-                $dateArray = explode('/', $dateInUserFormat);
-                $temp = $dateArray[0];
-                $dateArray[0] = $dateArray[1];
-                $dateArray[1] = $temp;
-                $dateInUserFormat = implode('/', $dateArray);
-            }
+				$dateArray = explode('/', $dateInUserFormat);
+				$temp = $dateArray[0];
+				$dateArray[0] = $dateArray[1];
+				$dateArray[1] = $temp;
+				$dateInUserFormat = implode('/', $dateArray);
+			}
 
 			$date = strtotime($dateInUserFormat);
-			$formatedDate = vtranslate('LBL_'.date('D', $date)) . ' ' . date('d', $date) . ' ' . vtranslate('LBL_'.date('M', $date));
+			$formatedDate = vtranslate('LBL_' . date('D', $date)) . ' ' . date('d', $date) . ' ' . vtranslate('LBL_' . date('M', $date));
 			if (date('Y', $date) != date('Y')) {
-				$formatedDate .= ', '.date('Y', $date);
+				$formatedDate .= ', ' . date('Y', $date);
 			}
 		}
 		return $formatedDate;
@@ -205,54 +214,57 @@ class Vtiger_Util_Helper {
 	 * @param <String> $string
 	 * @return <String>
 	 */
-	public static function replaceSpaceWithUnderScores($string) {
+	public static function replaceSpaceWithUnderScores($string)
+	{
 		return str_replace(' ', '_', $string);
 	}
 
-	public static function getRecordName ($recordId, $checkDelete=false) {
-		if($recordId == 0){
+	public static function getRecordName($recordId, $checkDelete = false)
+	{
+		if ($recordId == 0) {
 			/**
-			* In List view for reference field we are setting raw value in the dom element
-			* If we don't have any value for that field then raw value will be 0
-			*/
+			 * In List view for reference field we are setting raw value in the dom element
+			 * If we don't have any value for that field then raw value will be 0
+			 */
 			return false;
 		}
 		$adb = PearDatabase::getInstance();
 
 		$query = 'SELECT label from vtiger_crmentity where crmid=?';
-		if($checkDelete) {
-			$query.= ' AND deleted=0';
+		if ($checkDelete) {
+			$query .= ' AND deleted=0';
 		}
-		$result = $adb->pquery($query,array($recordId));
+		$result = $adb->pquery($query, array($recordId));
 
 		$num_rows = $adb->num_rows($result);
-		if($num_rows) {
-			return $adb->query_result($result,0,'label');
+		if ($num_rows) {
+			return $adb->query_result($result, 0, 'label');
 		}
 		return false;
 	}
 
-	public static function getRecordId($recordName, $module = array(), $checkDelete = false) {
+	public static function getRecordId($recordName, $module = array(), $checkDelete = false)
+	{
 		$adb = PearDatabase::getInstance();
 
-		if(!is_array($module)) {
+		if (!is_array($module)) {
 			$module = array($module);
 		}
 
 		$query = 'SELECT crmid from vtiger_crmentity where label=?';
 		$params = array($recordName);
-		if(!empty($module)) {
-			$query .= ' AND setype IN ('. generateQuestionMarks($module).')';
+		if (!empty($module)) {
+			$query .= ' AND setype IN (' . generateQuestionMarks($module) . ')';
 			$params = array_merge($params, $module);
 		}
-		if($checkDelete) {
-			$query.= ' AND deleted=0';
+		if ($checkDelete) {
+			$query .= ' AND deleted=0';
 		}
 		$result = $adb->pquery($query, $params);
 
 		$num_rows = $adb->num_rows($result);
-		if($num_rows) {
-			return $adb->query_result($result,0,'crmid');
+		if ($num_rows) {
+			return $adb->query_result($result, 0, 'crmid');
 		}
 		return false;
 	}
@@ -262,24 +274,25 @@ class Vtiger_Util_Helper {
 	 * @param <DateTime> $dateTime
 	 * @return <String>
 	 */
-	public static function formatDateTimeIntoDayString($dateTime, $skipConversion = FALSE) {
+	public static function formatDateTimeIntoDayString($dateTime, $skipConversion = FALSE)
+	{
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$dateTimeInUserFormat = $dateTime;
 		if (!$skipConversion) {
 			$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($dateTime);
 		}
 
-		if (substr_count($dateTimeInUserFormat,' ') == 1) $dateTimeInUserFormat .= ' '; // init for meridiem if not present
+		if (substr_count($dateTimeInUserFormat, ' ') == 1) $dateTimeInUserFormat .= ' '; // init for meridiem if not present
 		list($dateInUserFormat, $timeInUserFormat, $meridiem) = explode(' ', $dateTimeInUserFormat);
-		if($meridiem && $currentUser->get('hour_format') === '12' ){
-			$displayTime = $timeInUserFormat.' '.$meridiem;
+		if ($meridiem && $currentUser->get('hour_format') === '12') {
+			$displayTime = $timeInUserFormat . ' ' . $meridiem;
 		} else {
 			list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
-			$displayTime = $hours .':'. $minutes;
+			$displayTime = $hours . ':' . $minutes;
 			if ($currentUser->get('hour_format') === '12') {
 				$displayTime = Vtiger_Time_UIType::getTimeValueInAMorPM($displayTime);
+			}
 		}
-	}
 
 		/**
 		 * To support strtotime() for 'mm-dd-yyyy' format the separator should be '/'
@@ -288,7 +301,7 @@ class Vtiger_Util_Helper {
 		 */
 		if ($currentUser->get('date_format') === 'mm-dd-yyyy') {
 			$dateInUserFormat = str_replace('-', '/', $dateInUserFormat);
-		} else if ($currentUser->get('date_format') === 'dd/mm/yyyy'){
+		} else if ($currentUser->get('date_format') === 'dd/mm/yyyy') {
 			// strtotime expects the format m/d/y making changes to its convenient
 			$dateArray = explode('/', $dateInUserFormat);
 			$temp = $dateArray[0];
@@ -299,9 +312,9 @@ class Vtiger_Util_Helper {
 
 		$date = strtotime($dateInUserFormat);
 		//Adding date details
-		$formatedDate = vtranslate('LBL_'.date('D', $date)). ', ' .vtranslate('LBL_'.date('M', $date)). ' ' .date('d', $date). ', ' .date('Y', $date);
+		$formatedDate = vtranslate('LBL_' . date('D', $date)) . ', ' . vtranslate('LBL_' . date('M', $date)) . ' ' . date('d', $date) . ', ' . date('Y', $date);
 		//Adding time details
-		$formatedDate .= ' ' .vtranslate('LBL_AT'). ' ' .$displayTime;
+		$formatedDate .= ' ' . vtranslate('LBL_AT') . ' ' . $displayTime;
 
 		return $formatedDate;
 	}
@@ -309,27 +322,29 @@ class Vtiger_Util_Helper {
 	/**
 	 * Function to get picklist key for a picklist
 	 */
-	public static function getPickListId($fieldName){
-		$pickListIds = array('opportunity_type' => 'opptypeid',
-								'sales_stage'	=> 'sales_stage_id',
-								'rating'		=> 'rating_id',
-								'ticketpriorities'	=> 'ticketpriorities_id',
-								'ticketseverities'	=> 'ticketseverities_id',
-								'ticketstatus'		=> 'ticketstatus_id',
-								'ticketcategories'	=> 'ticketcategories_id',
-								'salutationtype'	=> 'salutationid',
-								'faqstatus'			=> 'faqstatus_id',
-								'faqcategories'		=> 'faqcategories_id',
-								'recurring_frequency'=> 'recurring_frequency_id',
-								'payment_duration'	=> 'payment_duration_id',
-								'language'			=> 'id',
-								'recurringtype' => 'recurringeventid',
-								'duration_minutes' => 'minutesid'
-							);
-		if(array_key_exists($fieldName, $pickListIds)){
+	public static function getPickListId($fieldName)
+	{
+		$pickListIds = array(
+			'opportunity_type' => 'opptypeid',
+			'sales_stage'	=> 'sales_stage_id',
+			'rating'		=> 'rating_id',
+			'ticketpriorities'	=> 'ticketpriorities_id',
+			'ticketseverities'	=> 'ticketseverities_id',
+			'ticketstatus'		=> 'ticketstatus_id',
+			'ticketcategories'	=> 'ticketcategories_id',
+			'salutationtype'	=> 'salutationid',
+			'faqstatus'			=> 'faqstatus_id',
+			'faqcategories'		=> 'faqcategories_id',
+			'recurring_frequency' => 'recurring_frequency_id',
+			'payment_duration'	=> 'payment_duration_id',
+			'language'			=> 'id',
+			'recurringtype' => 'recurringeventid',
+			'duration_minutes' => 'minutesid'
+		);
+		if (array_key_exists($fieldName, $pickListIds)) {
 			return $pickListIds[$fieldName];
 		}
-		return $fieldName.'id';
+		return $fieldName . 'id';
 	}
 
 	/**
@@ -337,21 +352,22 @@ class Vtiger_Util_Helper {
 	 * @param type $fieldName -- string
 	 * @return type -- array of values
 	 */
-	public static function getPickListValues($fieldName) {
+	public static function getPickListValues($fieldName)
+	{
 		$cache = Vtiger_Cache::getInstance();
-		if($cache->getPicklistValues($fieldName)) {
+		if ($cache->getPicklistValues($fieldName)) {
 			return $cache->getPicklistValues($fieldName);
 		}
 		$db = PearDatabase::getInstance();
 
 		$primaryKey = Vtiger_Util_Helper::getPickListId($fieldName);
-		$query = 'SELECT '.$primaryKey.', '.$fieldName.' FROM vtiger_'.$fieldName.' order by sortorderid';
+		$query = 'SELECT ' . $primaryKey . ', ' . $fieldName . ' FROM vtiger_' . $fieldName . ' order by sortorderid';
 		$values = array();
 		$result = $db->pquery($query, array());
 		$num_rows = $db->num_rows($result);
-		for($i=0; $i<$num_rows; $i++) {
+		for ($i = 0; $i < $num_rows; $i++) {
 			//Need to decode the picklist values twice which are saved from old ui
-			$values[$db->query_result($result,$i,$primaryKey)] = decode_html(decode_html($db->query_result($result,$i,$fieldName)));
+			$values[$db->query_result($result, $i, $primaryKey)] = decode_html(decode_html($db->query_result($result, $i, $fieldName)));
 		}
 		$cache->setPicklistValues($fieldName, $values);
 		return $values;
@@ -361,10 +377,12 @@ class Vtiger_Util_Helper {
 	 * Function gets the CRM's base Currency information
 	 * @return Array
 	 */
-	public static function getBaseCurrency() {
+	public static function getBaseCurrency()
+	{
 		$db = PearDatabase::getInstance();
 		$result = $db->pquery('SELECT * FROM vtiger_currency_info WHERE defaultid < 0', array());
-		if($db->num_rows($result)) return $db->query_result_rowdata($result, 0);
+		if ($db->num_rows($result)) return $db->query_result_rowdata($result, 0);
+		return array();
 	}
 
 	/**
@@ -373,9 +391,10 @@ class Vtiger_Util_Helper {
 	 * @param <Integer> $roleId
 	 * @return <Array> list of role based picklist values
 	 */
-	public static function getRoleBasedPicklistValues($fieldName, $roleId) {
-		if(Vtiger_Cache::get('PicklistRoleBasedValues',$fieldName.$roleId)){
-			return Vtiger_Cache::get('PicklistRoleBasedValues',$fieldName.$roleId);
+	public static function getRoleBasedPicklistValues($fieldName, $roleId)
+	{
+		if (Vtiger_Cache::get('PicklistRoleBasedValues', $fieldName . $roleId)) {
+			return Vtiger_Cache::get('PicklistRoleBasedValues', $fieldName . $roleId);
 		}
 		$db = PearDatabase::getInstance();
 
@@ -384,14 +403,14 @@ class Vtiger_Util_Helper {
 					  INNER JOIN vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldName.picklist_valueid
 				  WHERE roleid=? and picklistid in (select picklistid from vtiger_picklist) order by sortorderid";
 		$result = $db->pquery($query, array($roleId));
-		$picklistValues = Array();
-		if($db->num_rows($result) > 0) { 
-			while ($row = $db->fetch_array($result)) { 
+		$picklistValues = array();
+		if ($db->num_rows($result) > 0) {
+			while ($row = $db->fetch_array($result)) {
 				//Need to decode the picklist values twice which are saved from old ui 
-				$picklistValues[$row[$fieldName]] = decode_html(decode_html($row[$fieldName])); 
+				$picklistValues[$row[$fieldName]] = decode_html(decode_html($row[$fieldName]));
 			}
 		}
-		Vtiger_Cache::set('PicklistRoleBasedValues',$fieldName.$roleId,$picklistValues);
+		Vtiger_Cache::set('PicklistRoleBasedValues', $fieldName . $roleId, $picklistValues);
 		return $picklistValues;
 	}
 
@@ -401,20 +420,21 @@ class Vtiger_Util_Helper {
 	 * @param <Array> $badFileExtensions
 	 * @return <String> sanitized file name
 	 */
-	public static function sanitizeUploadFileName($fileName, $badFileExtensions = false) {
+	public static function sanitizeUploadFileName($fileName, $badFileExtensions = false)
+	{
 		if (!$badFileExtensions) {
 			$badFileExtensions = vglobal('upload_badext');
 		}
-		$fileName = preg_replace('/[\s#%&]+/', '_', $fileName);//replace space,#,%,& with _ in filename
+		$fileName = preg_replace('/[\s#%&]+/', '_', $fileName); //replace space,#,%,& with _ in filename
 		$fileName = rtrim($fileName, '\\/<>?*:"<>|');
 
 		$fileNameParts = explode('.', $fileName);
 		$countOfFileNameParts = php7_count($fileNameParts);
 		$badExtensionFound = false;
 
-		for ($i=0; $i<$countOfFileNameParts; $i++) {
+		for ($i = 0; $i < $countOfFileNameParts; $i++) {
 			$partOfFileName = $fileNameParts[$i];
-			if(in_array(strtolower($partOfFileName), $badFileExtensions)) {
+			if (in_array(strtolower($partOfFileName), $badFileExtensions)) {
 				$badExtensionFound = true;
 				$fileNameParts[$i] = $partOfFileName . 'file';
 			}
@@ -425,8 +445,8 @@ class Vtiger_Util_Helper {
 			$newFileName .= ".txt";
 		}
 
-		$newFileName = ltrim(basename(' '.$newFileName));//allowed filename like UTF-8 characters
-		
+		$newFileName = ltrim(basename(' ' . $newFileName)); //allowed filename like UTF-8 characters
+
 		return $newFileName;
 	}
 
@@ -434,15 +454,17 @@ class Vtiger_Util_Helper {
 	 * Function to get maximum upload size
 	 * @return <Float> maximum upload size
 	 */
-	public static function getMaxUploadSize() {
-		return ceil(vglobal('upload_maxsize') / (1024 * 1024)); 
+	public static function getMaxUploadSize()
+	{
+		return ceil(vglobal('upload_maxsize') / (1024 * 1024));
 	}
 
 	/**
 	 * Function to get maximum upload size in bytes
 	 * @return <Float> maximum upload size
 	 */
-	public static function getMaxUploadSizeInBytes() {
+	public static function getMaxUploadSizeInBytes()
+	{
 		return (self::getMaxUploadSize() * 1024 * 1024);
 	}
 
@@ -451,7 +473,8 @@ class Vtiger_Util_Helper {
 	 * @param <Integer> $ownerId
 	 * @return <String> $ownerName
 	 */
-	public static function getOwnerName($ownerId) {
+	public static function getOwnerName($ownerId)
+	{
 		$cache = Vtiger_Cache::getInstance();
 		if ($cache->hasOwnerDbName($ownerId)) {
 			return $cache->getOwnerDbName($ownerId);
@@ -464,12 +487,12 @@ class Vtiger_Util_Helper {
 			$ownerName = $userName;
 		} else {
 			$ownerModel = Settings_Groups_Record_Model::getInstance($ownerId);
-			if(!empty($ownerModel)) {
+			if (!empty($ownerModel)) {
 				$ownerName = $ownerModel->getName();
 			}
 		}
-		if(!empty($ownerName)) {
-		$cache->setOwnerDbName($ownerId, $ownerName);
+		if (!empty($ownerName)) {
+			$cache->setOwnerDbName($ownerId, $ownerName);
 		}
 		return $ownerName;
 	}
@@ -479,11 +502,13 @@ class Vtiger_Util_Helper {
 	 * @param <String> $string
 	 * @return <String>
 	 */
-	public static function getDecodedValue($string) {
+	public static function getDecodedValue($string)
+	{
 		return html_entity_decode($string, ENT_COMPAT, 'UTF-8');
 	}
 
-	public static function getActiveAdminCurrentDateTime() {
+	public static function getActiveAdminCurrentDateTime()
+	{
 		global $default_timezone;
 		$admin = Users::getActiveAdminUser();
 		$adminTimeZone = $admin->time_zone;
@@ -492,12 +517,13 @@ class Vtiger_Util_Helper {
 		@date_default_timezone_set($default_timezone);
 		return $date;
 	}
-/**
+	/**
 	 * Function to get Creator of this record
 	 * @param <Integer> $recordId
 	 * @return <Integer>
 	 */
-	public static function getCreator($recordId) {
+	public static function getCreator($recordId)
+	{
 		$cache = Vtiger_Cache::getInstance();
 		if ($cache->hasCreator($recordId)) {
 			return $cache->getCreator($recordId);
@@ -520,7 +546,8 @@ class Vtiger_Util_Helper {
 	 * @param <Vtiger_Users_Model> $userObject
 	 * @return <String> date and time with hour format
 	 */
-	public static function convertDateTimeIntoUsersDisplayFormat($dateTime, $userObject = null) {
+	public static function convertDateTimeIntoUsersDisplayFormat($dateTime, $userObject = null)
+	{
 		require_once 'includes/runtime/LanguageHandler.php';
 		require_once 'includes/runtime/Globals.php';
 		if ($userObject) {
@@ -539,7 +566,7 @@ class Vtiger_Util_Helper {
 			$time = Vtiger_Time_UIType::getTimeValueInAMorPM($time);
 		}
 
-		return $date.' ' .$time;
+		return $date . ' ' . $time;
 	}
 
 	/**
@@ -548,7 +575,8 @@ class Vtiger_Util_Helper {
 	 * @param <Vtiger_Users_Model> $userObject
 	 * @return <String> time with hour format
 	 */
-	public static function convertTimeIntoUsersDisplayFormat($time, $userObject = null) {
+	public static function convertTimeIntoUsersDisplayFormat($time, $userObject = null)
+	{
 		require_once 'includes/runtime/LanguageHandler.php';
 		require_once 'includes/runtime/Globals.php';
 		if ($userObject) {
@@ -557,7 +585,7 @@ class Vtiger_Util_Helper {
 			$userModel = Users_Privileges_Model::getCurrentUserModel();
 		}
 
-		if($userModel->get('hour_format') == '12') {
+		if ($userModel->get('hour_format') == '12') {
 			$time = Vtiger_Time_UIType::getTimeValueInAMorPM($time);
 		}
 
@@ -568,14 +596,17 @@ class Vtiger_Util_Helper {
 	 * Function gets the CRM's base Currency information according to user preference
 	 * @return Array
 	 */
-	public static function getUserCurrencyInfo() {
+	public static function getUserCurrencyInfo()
+	{
 		$db = PearDatabase::getInstance();
 		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$result = $db->pquery('SELECT * FROM vtiger_currency_info WHERE id = ?', array($currentUser->get('currency_id'))); 
-		if($db->num_rows($result)) return $db->query_result_rowdata($result, 0);
+		$result = $db->pquery('SELECT * FROM vtiger_currency_info WHERE id = ?', array($currentUser->get('currency_id')));
+		if ($db->num_rows($result)) return $db->query_result_rowdata($result, 0);
+		return array();
 	}
 
-	public static function getGroupsIdsForUsers($userId) {
+	public static function getGroupsIdsForUsers($userId)
+	{
 		vimport('~~/include/utils/GetUserGroups.php');
 
 		$userGroupInstance = new GetUserGroups();
@@ -583,15 +614,16 @@ class Vtiger_Util_Helper {
 		return $userGroupInstance->user_groups;
 	}
 
-	public static function transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel) {
-		if(empty($listSearchParams)) {
+	public static function transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel)
+	{
+		if (empty($listSearchParams)) {
 			$listSearchParams = array();
 		}
 		$advFilterConditionFormat = array();
-		$glueOrder = array('and','or');
+		$glueOrder = array('and', 'or');
 		$groupIterator = 0;
-		foreach($listSearchParams as $groupInfo){
-			if(empty($groupInfo)){
+		foreach ($listSearchParams as $groupInfo) {
+			if (empty($groupInfo)) {
 				$advFilterConditionFormat[] = array();
 				$groupIterator++;
 				continue;
@@ -599,89 +631,88 @@ class Vtiger_Util_Helper {
 			$groupConditionInfo = array();
 			$groupColumnsInfo = array();
 			$groupConditionGlue = $glueOrder[$groupIterator];
-			foreach($groupInfo as $fieldSearchInfo){
-				   $advFilterFieldInfoFormat = array();
-				   $fieldName = $fieldSearchInfo[0];
-				   preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
-					if (php7_count($matches) != 0) {
-						list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
-						$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
-						$fieldInfo = Vtiger_Field_Model::getInstance($referenceFieldName, $referenceModuleModel);
-						$fieldInfo->set('reference_fieldname', $fieldName);
-					} else {
-						$fieldInfo = $moduleModel->getField($fieldName);
-						$referenceModule = $moduleModel->getName();
-						$referenceFieldName = $fieldName;
-					}
-					//handling events custom fields from calendar
-					if(empty($fieldInfo) && $referenceModule == 'Calendar') {
-						$eventsModuleModel = Vtiger_Module_Model::getInstance('Events');
-						$fieldInfo = Vtiger_Field_Model::getInstance($referenceFieldName, $eventsModuleModel);
-					}
+			foreach ($groupInfo as $fieldSearchInfo) {
+				$advFilterFieldInfoFormat = array();
+				$fieldName = $fieldSearchInfo[0];
+				preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
+				if (php7_count($matches) != 0) {
+					list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+					$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
+					$fieldInfo = Vtiger_Field_Model::getInstance($referenceFieldName, $referenceModuleModel);
+					$fieldInfo->set('reference_fieldname', $fieldName);
+				} else {
+					$fieldInfo = $moduleModel->getField($fieldName);
+					$referenceModule = $moduleModel->getName();
+					$referenceFieldName = $fieldName;
+				}
+				//handling events custom fields from calendar
+				if (empty($fieldInfo) && $referenceModule == 'Calendar') {
+					$eventsModuleModel = Vtiger_Module_Model::getInstance('Events');
+					$fieldInfo = Vtiger_Field_Model::getInstance($referenceFieldName, $eventsModuleModel);
+				}
 
-				   $operator = $fieldSearchInfo[1];
-				   $fieldValue = $fieldSearchInfo[2];
+				$operator = $fieldSearchInfo[1];
+				$fieldValue = $fieldSearchInfo[2];
 
 
-				   //Request will be having in terms of AM and PM but the database will be having in 24 hr format so converting
-					//Database format
+				//Request will be having in terms of AM and PM but the database will be having in 24 hr format so converting
+				//Database format
 
-					if($fieldInfo && $fieldInfo->getFieldDataType() == "time") {
-						$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-					}
+				if ($fieldInfo && $fieldInfo->getFieldDataType() == "time") {
+					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
+				}
 
-					$specialDateTimeConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
-					if($fieldName == 'date_start' || $fieldName == 'due_date' || ($fieldInfo && $fieldInfo->getFieldDataType() == "datetime") && !in_array($operator, $specialDateTimeConditions) ) {
-						$dateValues = explode(',', $fieldValue);
-						//Indicate whether it is fist date in the between condition
-						$isFirstDate = true;
-						foreach($dateValues as $key => $dateValue) {
-							$dateTimeCompoenents = explode(' ', $dateValue);
-							if(empty($dateTimeCompoenents[1])) {
-								if($isFirstDate)
-									$dateTimeCompoenents[1] = '00:00:00';
-								else
-									$dateTimeCompoenents[1] = '23:59:59';
-
-							}
-							$dateValue = implode(' ',$dateTimeCompoenents);
-							$dateValues[$key] = $dateValue;
-							$isFirstDate = false;
+				$specialDateTimeConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
+				if ($fieldName == 'date_start' || $fieldName == 'due_date' || ($fieldInfo && $fieldInfo->getFieldDataType() == "datetime") && !in_array($operator, $specialDateTimeConditions)) {
+					$dateValues = explode(',', $fieldValue);
+					//Indicate whether it is fist date in the between condition
+					$isFirstDate = true;
+					foreach ($dateValues as $key => $dateValue) {
+						$dateTimeCompoenents = explode(' ', $dateValue);
+						if (empty($dateTimeCompoenents[1])) {
+							if ($isFirstDate)
+								$dateTimeCompoenents[1] = '00:00:00';
+							else
+								$dateTimeCompoenents[1] = '23:59:59';
 						}
-						$fieldValue = implode(',',$dateValues);
+						$dateValue = implode(' ', $dateTimeCompoenents);
+						$dateValues[$key] = $dateValue;
+						$isFirstDate = false;
 					}
+					$fieldValue = implode(',', $dateValues);
+				}
 
-                    if ($fieldInfo) {
-                        $columnName = $fieldInfo->getCustomViewColumnName();
-                    }
-				   $advFilterFieldInfoFormat['columnname'] = $columnName;
-				   $advFilterFieldInfoFormat['comparator'] = $operator;
-				   $advFilterFieldInfoFormat['value'] = $fieldValue;
-				   $advFilterFieldInfoFormat['column_condition'] = $groupConditionGlue;
-				   $groupColumnsInfo[] = $advFilterFieldInfoFormat;
+				if ($fieldInfo) {
+					$columnName = $fieldInfo->getCustomViewColumnName();
+				}
+				$advFilterFieldInfoFormat['columnname'] = $columnName;
+				$advFilterFieldInfoFormat['comparator'] = $operator;
+				$advFilterFieldInfoFormat['value'] = $fieldValue;
+				$advFilterFieldInfoFormat['column_condition'] = $groupConditionGlue;
+				$groupColumnsInfo[] = $advFilterFieldInfoFormat;
 			}
 			$noOfConditions = php7_count($groupColumnsInfo);
 			//to remove the last column condition
-			$groupColumnsInfo[$noOfConditions-1]['column_condition']  = '';
+			$groupColumnsInfo[$noOfConditions - 1]['column_condition']  = '';
 			$groupConditionInfo['columns'] = $groupColumnsInfo;
 			$groupConditionInfo['condition'] = 'and';
 			$advFilterConditionFormat[] = $groupConditionInfo;
 			$groupIterator++;
 		}
 		//We aer removing last condition since this condition if there is next group and this is the last group
-		unset($advFilterConditionFormat[php7_count($advFilterConditionFormat)-1]['condition']);
+		unset($advFilterConditionFormat[php7_count($advFilterConditionFormat) - 1]['condition']);
 		return $advFilterConditionFormat;
-
 	}
 
-	 /***
-	* Function to set the default calendar activity types for new user
-	* @param <Integer> $userId - id of the user
-	*/
-	public static function setCalendarDefaultActivityTypesForUser($userId) {
+	/***
+	 * Function to set the default calendar activity types for new user
+	 * @param <Integer> $userId - id of the user
+	 */
+	public static function setCalendarDefaultActivityTypesForUser($userId)
+	{
 		$db = PearDatabase::getInstance();
 		$userEntries = $db->pquery('SELECT 1 FROM vtiger_calendar_user_activitytypes WHERE userid=?', array($userId));
-		if($db->num_rows($userEntries) <= 0) {
+		if ($db->num_rows($userEntries) <= 0) {
 			$queryResult = $db->pquery('SELECT id, defaultcolor FROM vtiger_calendar_default_activitytypes WHERE isdefault = ?', array('1'));
 			$numRows = $db->num_rows($queryResult);
 			$activityIds = array();
@@ -690,24 +721,33 @@ class Vtiger_Util_Helper {
 				$activityIds[$row['id']] = $row['defaultcolor'];
 			}
 
-			foreach($activityIds as $activityId=>$color) {
+			foreach ($activityIds as $activityId => $color) {
 				$db->pquery('INSERT INTO vtiger_calendar_user_activitytypes (id, defaultid, userid, color) VALUES (?,?,?,?)', array($db->getUniqueID('vtiger_calendar_user_activitytypes'), $activityId, $userId, $color));
 			}
 		}
-
 	}
 
-	public static function getAllSkins(){
-		return array('alphagrey' => '#666666',	'softed'	=> '#1560BD',	'bluelagoon'=> '#204E81',
-					 'nature'	=> '#008D4C',	'woodspice' => '#C19803',	'orchid'	=> '#C65479',
-					 'firebrick'=> '#E51400',	'twilight'	=> '#404952',	'almond'	=> '#894400');
+	public static function getAllSkins()
+	{
+		return array(
+			'alphagrey' => '#666666',
+			'softed'	=> '#1560BD',
+			'bluelagoon' => '#204E81',
+			'nature'	=> '#008D4C',
+			'woodspice' => '#C19803',
+			'orchid'	=> '#C65479',
+			'firebrick' => '#E51400',
+			'twilight'	=> '#404952',
+			'almond'	=> '#894400'
+		);
 	}
 
-	public static function isUserDeleted($userid) {
+	public static function isUserDeleted($userid)
+	{
 		$db = PearDatabase::getInstance();
 		$result = $db->pquery('SELECT deleted FROM vtiger_users WHERE id = ? AND (status=? OR deleted=?)', array($userid, 'Inactive', 1));
 		$count = $db->num_rows($result);
-		if($count > 0)
+		if ($count > 0)
 			return true;
 
 		return false;
@@ -719,77 +759,86 @@ class Vtiger_Util_Helper {
 	* @return returns default value for data type if match case found
 	* else returns empty string
 	*/
-   static function getDefaultMandatoryValue($dataType) {
-	   $value;
-	   switch ($dataType) {
-		   case 'date':
-		   case 'datetime' :
-				   $dateObject = new DateTime();
-				   $value = DateTimeField::convertToUserFormat($dateObject->format('Y-m-d'));
-			   break;
-		   case 'time' :
-			   $value = '00:00';
-			   break;
-		   case 'boolean':
-			   $value = false;
-			   break;
-		   case 'email':
-			   $value = '??@??.??';
-			   break;
-		   case 'url':
-			   $value = '???.??';
-			   break;
-		   case 'integer':
-			   $value = 0;
-			   break;
-		   case 'double':
-			   $value = 00.00;
-			   break;
-		   case 'currency':
-			   $value = 0.00;
-			   break;
-		   case 'reference' :
-			   $value = '';
-			   break;
-		   case 'picklist' :
-			   $value = '';
-			   break;
-		   case 'multipicklist' :
-			   $value = '';
-			   break;
-		   default :
-			   $value = '?????';
-			   break;
-	   }
-	   return $value;
-   }
-   public static function checkDbUTF8Support($conn) {
+	static function getDefaultMandatoryValue($dataType)
+	{
+		$value;
+		switch ($dataType) {
+			case 'date':
+			case 'datetime':
+				$dateObject = new DateTime();
+				$value = DateTimeField::convertToUserFormat($dateObject->format('Y-m-d'));
+				break;
+			case 'time':
+				$value = '00:00';
+				break;
+			case 'boolean':
+				$value = false;
+				break;
+			case 'email':
+				$value = '??@??.??';
+				break;
+			case 'url':
+				$value = '???.??';
+				break;
+			case 'integer':
+				$value = 0;
+				break;
+			case 'double':
+				$value = 00.00;
+				break;
+			case 'currency':
+				$value = 0.00;
+				break;
+			case 'reference':
+				$value = '';
+				break;
+			case 'picklist':
+				$value = '';
+				break;
+			case 'multipicklist':
+				$value = '';
+				break;
+			default:
+				$value = '?????';
+				break;
+		}
+		return $value;
+	}
+	public static function checkDbUTF8Support($conn)
+	{
 		global $db_type;
-		if($db_type == 'pgsql')
+		if ($db_type == 'pgsql')
 			return true;
 		$dbvarRS = $conn->Execute("show variables like '%_database' ");
 		$db_character_set = null;
 		$db_collation_type = null;
-		while(!$dbvarRS->EOF) {
+		while (!$dbvarRS->EOF) {
 			$arr = $dbvarRS->FetchRow();
 			$arr = array_change_key_case($arr);
-			switch($arr['variable_name']) {
-				case 'character_set_database' : $db_character_set = $arr['value']; break;
-				case 'collation_database'     : $db_collation_type = $arr['value']; break;
+			switch ($arr['variable_name']) {
+				case 'character_set_database':
+					$db_character_set = $arr['value'];
+					break;
+				case 'collation_database':
+					$db_collation_type = $arr['value'];
+					break;
 			}
 			// If we have all the required information break the loop. 
-			if($db_character_set != null && $db_collation_type != null) break;
+			if ($db_character_set != null && $db_collation_type != null) break;
 		}
 		return (stristr($db_character_set, 'utf8') && stristr($db_collation_type, 'utf8'));
 	}
 
-	public static function checkDbLocalInfileSupport() {
+	public static function checkDbLocalInfileSupport()
+	{
 		$db = PearDatabase::getInstance();
 		$rs = $db->pquery("show variables like 'local_infile'", array());
 		$db_local_infile = null;
 		while ($arr = $db->fetch_array($rs)) {
-			switch($arr['variable_name']) {
-				case 'local_infile': $db_local_infile = $arr['value']; break;
+			switch ($arr['variable_name']) {
+				case 'local_infile':
+					$db_local_infile = $arr['value'];
+					break;
 			}
 			if ($db_local_infile != null) break;
 		}
@@ -801,14 +850,15 @@ class Vtiger_Util_Helper {
 	 * @param <Date Time> $dateTime
 	 * @return <String>
 	 */
-	public static function formatDateAndDateDiffInString($dateTime) {
+	public static function formatDateAndDateDiffInString($dateTime)
+	{
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($dateTime);
 
 		list($dateInUserFormat, $timeInUserFormat) = explode(' ', $dateTimeInUserFormat);
 		list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
 
-		$displayTime = $hours.':'.$minutes;
+		$displayTime = $hours . ':' . $minutes;
 		if ($currentUser->get('hour_format') === '12') {
 			$displayTime = Vtiger_Time_UIType::getTimeValueInAMorPM($displayTime);
 		}
@@ -828,18 +878,18 @@ class Vtiger_Util_Helper {
 			}
 
 			$date = strtotime($dateInUserFormat);
-			$formatedDate = date('d', $date).' '.vtranslate('LBL_'.date('M', $date));
+			$formatedDate = date('d', $date) . ' ' . vtranslate('LBL_' . date('M', $date));
 			if (date('Y', $date) != date('Y')) {
 				$formatedDate = $dateInUserFormat;
 			}
 		}
 		$dateDiffString = self::formatDateDiffInStrings($dateTime);
-		$formatedDateAndDiff = $formatedDate." (".$dateDiffString.")";
+		$formatedDateAndDiff = $formatedDate . " (" . $dateDiffString . ")";
 
 		return $formatedDateAndDiff;
 	}
 
-	 /**
+	/**
 	 * Function to convert PHP array to Json format.
 	 * This is similiar to json_encode($data, JSON_UNESCAPED_UNICODE); to work 
 	 * in php ver < 5.4
@@ -848,14 +898,15 @@ class Vtiger_Util_Helper {
 	 *             https://code.google.com/p/apns-php/issues/detail?id=22 
 	 * @param <array> $data
 	 * @return <json> $unescapedUtf8Json
-	 */    
-	public static function toJsonWithUnescapedUtf8($data) {
+	 */
+	public static function toJsonWithUnescapedUtf8($data)
+	{
 		if (!is_array($data)) {
 			$data = array($data);
 		}
 		$escapedUtf8Json = Zend_Json::encode($data);
 
-		$unescapedUtf8Json = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', function($matches) {
+		$unescapedUtf8Json = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', function ($matches) {
 			if (function_exists('mb_convert_encoding')) {
 				return mb_convert_encoding(pack('H*', $matches[1]), 'UTF-8', 'UTF-16');
 			} else {
@@ -871,13 +922,13 @@ class Vtiger_Util_Helper {
 					//UTF-8 2-bytes
 					$first_byte = 0xC0 | (($decimal_code >> 6) & 0x1F);
 					$second_byte = 0x80 | ($decimal_code & 0x3F);
-					$character = chr($first_byte).chr($second_byte);
+					$character = chr($first_byte) . chr($second_byte);
 				} elseif ((0xFFFF & $decimal_code) == $decimal_code) {
 					//UTF-8 3-bytes
 					$first_byte = 0xE0 | (($decimal_code >> 12) & 0x0F);
 					$second_byte = 0x80 | (($decimal_code >> 6) & 0x3F);
 					$third_byte = 0x80 | ($decimal_code & 0x3F);
-					$character = chr($first_byte).chr($second_byte).chr($third_byte);
+					$character = chr($first_byte) . chr($second_byte) . chr($third_byte);
 				}
 				return $character;
 			}
@@ -890,11 +941,13 @@ class Vtiger_Util_Helper {
 	 * Function to escape string for sql query.
 	 * It returns string with escaped _ and %
 	 */
-	public static function escapeSqlString($string) {
-		return str_replace(array('\\','_', '%'), array('\\\\','\_', '\%'), $string);
+	public static function escapeSqlString($string)
+	{
+		return str_replace(array('\\', '_', '%'), array('\\\\', '\_', '\%'), $string);
 	}
 
-	public static function GetDirectorySize($path) {
+	public static function GetDirectorySize($path)
+	{
 		$bytestotal = 0;
 		$path = realpath($path);
 		if ($path !== false) {
@@ -905,14 +958,16 @@ class Vtiger_Util_Helper {
 		return $bytestotal;
 	}
 
-	public static function getCalendarReferenceModulesList() {
+	public static function getCalendarReferenceModulesList()
+	{
 		$moduleInstance = Vtiger_Module_Model::getInstance('Calendar');
 		$fieldInstance = Vtiger_Field_Model::getInstance('parent_id', $moduleInstance);
 		$referenceModuleList = $fieldInstance->getReferenceList();
 		return $referenceModuleList;
 	}
 
-	public static function getBrowserInfo() {
+	public static function getBrowserInfo()
+	{
 		$u_agent = vtlib_purify($_SERVER['HTTP_USER_AGENT']);
 		$bname = 'Unknown';
 		$platform = 'Unknown';
@@ -950,8 +1005,8 @@ class Vtiger_Util_Helper {
 
 		// finally get the correct version number
 		$known = array('Version', $ub, 'other');
-		$pattern = '#(?<browser>'.join('|', $known) .
-				')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+		$pattern = '#(?<browser>' . join('|', $known) .
+			')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
 		if (!preg_match_all($pattern, $u_agent, $matches)) {
 			// we have no matching number just continue
 		}
@@ -988,7 +1043,8 @@ class Vtiger_Util_Helper {
 		return $browserInfoModel;
 	}
 
-	static function detectModulenameFromRecordId($wsrecordid) {
+	static function detectModulenameFromRecordId($wsrecordid)
+	{
 		global $adb;
 		$idComponents = vtws_getIdComponents($wsrecordid);
 		$result = $adb->pquery("SELECT name FROM vtiger_ws_entity WHERE id=?", array($idComponents[0]));
@@ -1000,7 +1056,8 @@ class Vtiger_Util_Helper {
 
 	static $detectFieldnamesToResolveCache = array();
 
-	static function detectFieldnamesToResolve($module) {
+	static function detectFieldnamesToResolve($module)
+	{
 		global $adb;
 
 		// Cache hit?
@@ -1012,7 +1069,8 @@ class Vtiger_Util_Helper {
 
 		$result = $adb->pquery(
 			"SELECT DISTINCT fieldname FROM vtiger_field WHERE uitype IN(" .
-				generateQuestionMarks($resolveUITypes).") AND tabid=?", array($resolveUITypes, getTabid($module))
+				generateQuestionMarks($resolveUITypes) . ") AND tabid=?",
+			array($resolveUITypes, getTabid($module))
 		);
 		$fieldnames = array();
 		while ($resultrow = $adb->fetch_array($result)) {
@@ -1025,7 +1083,8 @@ class Vtiger_Util_Helper {
 		return $fieldnames;
 	}
 
-	static function resolveRecordValues(&$record, $user = null, $ignoreUnsetFields = false) {
+	static function resolveRecordValues(&$record, $user = null, $ignoreUnsetFields = false)
+	{
 		$userTypeFields = array('assigned_user_id', 'creator', 'userid', 'created_user_id', 'modifiedby');
 
 		if (empty($record))
@@ -1052,7 +1111,8 @@ class Vtiger_Util_Helper {
 		return $record;
 	}
 
-	static function fetchRecordLabelsForIds($recordIds) {
+	static function fetchRecordLabelsForIds($recordIds)
+	{
 		global $adb;
 		$crmIds = array();
 
@@ -1060,7 +1120,7 @@ class Vtiger_Util_Helper {
 			$idComponents = vtws_getIdComponents($id);
 			$crmIds[] = $idComponents[1];
 		}
-		$sqlResult = $adb->pquery("SELECT crmid,label from vtiger_crmentity WHERE crmid IN (".generateQuestionMarks($crmIds).") ;", $crmIds);
+		$sqlResult = $adb->pquery("SELECT crmid,label from vtiger_crmentity WHERE crmid IN (" . generateQuestionMarks($crmIds) . ") ;", $crmIds);
 		$num_rows = $adb->num_rows($sqlResult);
 
 		$labels = array();
@@ -1072,7 +1132,8 @@ class Vtiger_Util_Helper {
 		return $labels;
 	}
 
-	static function fetchRecordLabelForId($recordId) {
+	static function fetchRecordLabelForId($recordId)
+	{
 		$recordLabels = self::fetchRecordLabelsForIds(array($recordId));
 
 		foreach ($recordLabels as $key => $value) {
@@ -1083,7 +1144,8 @@ class Vtiger_Util_Helper {
 		return null;
 	}
 
-	static function getRelatedModuleLabel($relatedModule, $parentModule = "Contacts") {
+	static function getRelatedModuleLabel($relatedModule, $parentModule = "Contacts")
+	{
 		global $adb;
 
 		if (in_array($relatedModule, array('ProjectTask', 'ProjectMilestone')))
@@ -1099,8 +1161,9 @@ class Vtiger_Util_Helper {
 		return $relatedModuleLabel;
 	}
 
-//	Source should be Zapier if record is Created from Zapier
-	static function fillMandatoryFields($fieldName, $module, $source = '') {
+	//	Source should be Zapier if record is Created from Zapier
+	static function fillMandatoryFields($fieldName, $module, $source = '')
+	{
 		global $adb;
 		$moduleModel = Vtiger_Module_Model::getInstance($module);
 		$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
@@ -1108,193 +1171,214 @@ class Vtiger_Util_Helper {
 		$defaultValue = $fieldModel->getDefaultFieldValue();
 
 		switch ($fieldDataType) {
-			case 'date'			:	$value = $defaultValue;
-									if (empty($defaultValue)) {
-										$dateObject = new DateTime();
-										$value = $dateObject->format('Y-m-d');
-									}
-									break;
-			case 'datetime'		:	$value = $defaultValue;
-									if (empty($defaultValue)) {
-										$dateObject = new DateTime();
-										$value = DateTimeField::convertToUserFormat($dateObject->format('Y-m-d'));
-									}
-									break;
-			case 'time'			:	$value = '00:00:00';
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'text'			:	$value = '?????';
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'phone'		:	$value = '?????';
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'boolean'		:	$value = false;
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'email'		:	$value = '??@??.??';
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'string'		:	$value = '?????';
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'url'			:	$value = '???.??';
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'integer'		:	$value = 0;
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'double'		:	$value = 00.00;
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'currency'		:	$value = 0.00;
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'skype'		:	$value = '?????';
-									if (!empty($defaultValue)) {
-										$value = $defaultValue;
-									}
-									break;
-			case 'picklist'		:	$pickListDetails = $fieldModel->getPicklistValues();
-                                    if($defaultValue){ 
-                                        $value = $defaultValue; 
-                                        break; 
-                                    } 
-									foreach ($pickListDetails as $key => $value) {
-										$value = $key;
-										break;
-									}
-									break;
-			case 'multipicklist':	$pickListDetails = $fieldModel->getPicklistValues();
-                                    if($defaultValue){ 
-                                        $value = $defaultValue; 
-                                        break; 
-                                    }
-									foreach ($pickListDetails as $key => $value) {
-										$value = $key;
-										break;
-									}
-									break;
+			case 'date':
+				$value = $defaultValue;
+				if (empty($defaultValue)) {
+					$dateObject = new DateTime();
+					$value = $dateObject->format('Y-m-d');
+				}
+				break;
+			case 'datetime':
+				$value = $defaultValue;
+				if (empty($defaultValue)) {
+					$dateObject = new DateTime();
+					$value = DateTimeField::convertToUserFormat($dateObject->format('Y-m-d'));
+				}
+				break;
+			case 'time':
+				$value = '00:00:00';
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'text':
+				$value = '?????';
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'phone':
+				$value = '?????';
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'boolean':
+				$value = false;
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'email':
+				$value = '??@??.??';
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'string':
+				$value = '?????';
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'url':
+				$value = '???.??';
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'integer':
+				$value = 0;
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'double':
+				$value = 00.00;
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'currency':
+				$value = 0.00;
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'skype':
+				$value = '?????';
+				if (!empty($defaultValue)) {
+					$value = $defaultValue;
+				}
+				break;
+			case 'picklist':
+				$pickListDetails = $fieldModel->getPicklistValues();
+				if ($defaultValue) {
+					$value = $defaultValue;
+					break;
+				}
+				foreach ($pickListDetails as $key => $value) {
+					$value = $key;
+					break;
+				}
+				break;
+			case 'multipicklist':
+				$pickListDetails = $fieldModel->getPicklistValues();
+				if ($defaultValue) {
+					$value = $defaultValue;
+					break;
+				}
+				foreach ($pickListDetails as $key => $value) {
+					$value = $key;
+					break;
+				}
+				break;
 			case 'documentsFolder':	// get default folder wsId
-									$value = vtws_getWebserviceEntityId("DocumentFolders", "1");
-									break;
-			case 'reference'	:	$referenceFieldModule = $fieldModel->getReferenceList(true);
-									if (php7_count($referenceFieldModule) > 0) {
-										$user = Users_Record_Model::getCurrentUserModel();
-										$referenceModule = $referenceFieldModule[0];
-										$referenceFieldModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
-										$mandatoryFieldModels = $referenceFieldModuleModel->getMandatoryFieldModels();
-										$nameFields = $referenceFieldModuleModel->getNameFields();
-										$element = array();
+				$value = vtws_getWebserviceEntityId("DocumentFolders", "1");
+				break;
+			case 'reference':
+				$referenceFieldModule = $fieldModel->getReferenceList(true);
+				if (php7_count($referenceFieldModule) > 0) {
+					$user = Users_Record_Model::getCurrentUserModel();
+					$referenceModule = $referenceFieldModule[0];
+					$referenceFieldModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
+					$mandatoryFieldModels = $referenceFieldModuleModel->getMandatoryFieldModels();
+					$nameFields = $referenceFieldModuleModel->getNameFields();
+					$element = array();
 
-										foreach ($mandatoryFieldModels as $mandatoryFieldModel) {
-											$fieldName = $mandatoryFieldModel->get('name');
-											$type = $mandatoryFieldModel->getFieldDataType();
-											if ($type == 'reference')
-												return '';
+					foreach ($mandatoryFieldModels as $mandatoryFieldModel) {
+						$fieldName = $mandatoryFieldModel->get('name');
+						$type = $mandatoryFieldModel->getFieldDataType();
+						if ($type == 'reference')
+							return '';
 
-											$fieldValue = Vtiger_Util_Helper::fillMandatoryFields($fieldName, $referenceModule);
-											$element[$fieldName] = $fieldValue;
-										}
-										$element['assigned_user_id'] = vtws_getWebserviceEntityId('Users', $user->id);
+						$fieldValue = Vtiger_Util_Helper::fillMandatoryFields($fieldName, $referenceModule);
+						$element[$fieldName] = $fieldValue;
+					}
+					$element['assigned_user_id'] = vtws_getWebserviceEntityId('Users', $user->id);
 
-										$fieldLabel = '';
-										foreach ($nameFields as $nameField) {
-											$fieldLabel .= $element[$nameField].' ';
-										}
-										$fieldLabel = trim($fieldLabel);
+					$fieldLabel = '';
+					foreach ($nameFields as $nameField) {
+						$fieldLabel .= $element[$nameField] . ' ';
+					}
+					$fieldLabel = trim($fieldLabel);
 
-										$query = "SELECT crmid FROM vtiger_crmentity WHERE label = ? AND deleted = ? AND setype = ?";
-										$result = $adb->pquery($query, array($fieldLabel, 0, $referenceModule));
+					$query = "SELECT crmid FROM vtiger_crmentity WHERE label = ? AND deleted = ? AND setype = ?";
+					$result = $adb->pquery($query, array($fieldLabel, 0, $referenceModule));
 
-										if ($adb->num_rows($result)) {
-											$crmid = $adb->query_result($result, 0, 'crmid');
-											return $crmid;
-										} else {
-											try {
-												if (isset($source) && !empty($source)) {
-													$element['source'] = $source;
-												}
-												if (!function_exists("vtws_create")) {
-													include_once 'include/Webservices/Create.php';
-												}
-												$entity = vtws_create($referenceModule, $element, $user);
-												$wsId = vtws_getIdComponents($entity['id']);
-												return $wsId[1];
-											} catch (Exception $ex) {
-												return '';
-											}
-										}
-									} else {
-										return '';
-									}
-									break;
-			default				:	$value = '?????';
-									break;
+					if ($adb->num_rows($result)) {
+						$crmid = $adb->query_result($result, 0, 'crmid');
+						return $crmid;
+					} else {
+						try {
+							if (isset($source) && !empty($source)) {
+								$element['source'] = $source;
+							}
+							if (!function_exists("vtws_create")) {
+								include_once 'include/Webservices/Create.php';
+							}
+							$entity = vtws_create($referenceModule, $element, $user);
+							$wsId = vtws_getIdComponents($entity['id']);
+							return $wsId[1];
+						} catch (Exception $ex) {
+							return '';
+						}
+					}
+				} else {
+					return '';
+				}
+				break;
+			default:
+				$value = '?????';
+				break;
 		}
 		return $value;
 	}
 
-	public static function convertSpaceToHyphen($string) {
+	public static function convertSpaceToHyphen($string)
+	{
 		if (!empty($string)) {
 			return str_replace(" ", "-", decode_html($string));
 		}
 	}
 
-	public static function escapeCssSpecialCharacters($string) {
-		if(!empty($string)) {
+	public static function escapeCssSpecialCharacters($string)
+	{
+		if (!empty($string)) {
 			$pattern = "/[!#$%&'()*+,.\/:;<=>?@^`~]/";
 			return preg_replace($pattern, '\\\\$0', $string);
 		}
 	}
-    
-    public static function getEncryptedFileName($sanitizedFileName) {
+
+	public static function getEncryptedFileName($sanitizedFileName)
+	{
 		$encryptedFileName = $sanitizedFileName;
 		if ($sanitizedFileName) {
 			$fileNameParts = explode('.', decode_html($sanitizedFileName));
 			$fileType = array_pop($fileNameParts);
-            $encryptedFileName = md5(md5(microtime(true)).implode('.', $fileNameParts)).'.'.$fileType;
+			$encryptedFileName = md5(md5(microtime(true)) . implode('.', $fileNameParts)) . '.' . $fileType;
 		}
 		return $encryptedFileName;
 	}
-    
-    public static function validateFieldValue($fieldValue,$fieldModel){
-        $fieldDataType = $fieldModel->getFieldDataType();
-        $fieldInfo = $fieldModel->getFieldInfo();
-        $editablePicklistValues = isset($fieldInfo['editablepicklistvalues'])? $fieldInfo['editablepicklistvalues'] : null;
-        if($fieldValue && $fieldDataType == 'picklist'){
-           if(!empty($editablePicklistValues) && !isset($editablePicklistValues[$fieldValue])){
-                $fieldValue = null;
-            }
-        }elseif(!empty($fieldValue) && $fieldDataType == 'multipicklist'){
-            if(!empty($editablePicklistValues)){
-                foreach($fieldValue as $key => $value){
-                    if(!isset($editablePicklistValues[$value])){
-                        unset($fieldValue[$key]);
-                    }
-                }
-            }
-        }
-        return $fieldValue;
-    }
+
+	public static function validateFieldValue($fieldValue, $fieldModel)
+	{
+		$fieldDataType = $fieldModel->getFieldDataType();
+		$fieldInfo = $fieldModel->getFieldInfo();
+		$editablePicklistValues = isset($fieldInfo['editablepicklistvalues']) ? $fieldInfo['editablepicklistvalues'] : null;
+		if ($fieldValue && $fieldDataType == 'picklist') {
+			if (!empty($editablePicklistValues) && !isset($editablePicklistValues[$fieldValue])) {
+				$fieldValue = null;
+			}
+		} elseif (!empty($fieldValue) && $fieldDataType == 'multipicklist') {
+			if (!empty($editablePicklistValues)) {
+				foreach ($fieldValue as $key => $value) {
+					if (!isset($editablePicklistValues[$value])) {
+						unset($fieldValue[$key]);
+					}
+				}
+			}
+		}
+		return $fieldValue;
+	}
 }

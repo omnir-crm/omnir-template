@@ -8,40 +8,47 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class Users_ExportData_Action extends Vtiger_ExportData_Action {
-    
-    public function requiresPermission(\Vtiger_Request $request) {
+class Users_ExportData_Action extends Vtiger_ExportData_Action
+{
+
+	public function requiresPermission(\Vtiger_Request $request)
+	{
 		return array();
 	}
-    
-    public function checkPermission(Vtiger_Request $request){
+
+	public function checkPermission(Vtiger_Request $request)
+	{
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		if(!$currentUserModel->isAdminUser()) {
+		if (!$currentUserModel->isAdminUser()) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
 		}
+		return true;
 	}
 
-	var $exportableFields = array(	'user_name'		=> 'User Name',
-									'title'			=> 'Title',
-									'first_name'	=> 'First Name',
-									'last_name'		=> 'Last Name',
-									'email1'		=> 'Email',
-									'email2'		=> 'Other Email',
-									'secondaryemail'=> 'Secondary Email',
-									'phone_work'	=> 'Office Phone',
-									'phone_mobile'	=> 'Mobile',
-									'phone_fax'		=> 'Fax',
-									'address_street'=> 'Street',
-									'address_city'	=> 'City',
-									'address_state'	=> 'State',
-									'address_country'	=> 'Country',
-									'address_postalcode'=> 'Postal Code');
+	var $exportableFields = array(
+		'user_name'		=> 'User Name',
+		'title'			=> 'Title',
+		'first_name'	=> 'First Name',
+		'last_name'		=> 'Last Name',
+		'email1'		=> 'Email',
+		'email2'		=> 'Other Email',
+		'secondaryemail' => 'Secondary Email',
+		'phone_work'	=> 'Office Phone',
+		'phone_mobile'	=> 'Mobile',
+		'phone_fax'		=> 'Fax',
+		'address_street' => 'Street',
+		'address_city'	=> 'City',
+		'address_state'	=> 'State',
+		'address_country'	=> 'Country',
+		'address_postalcode' => 'Postal Code'
+	);
 
 	/**
 	 * Function exports the data based on the mode
 	 * @param Vtiger_Request $request
 	 */
-	function ExportData(Vtiger_Request $request) {
+	function ExportData(Vtiger_Request $request)
+	{
 		$this->moduleCall = true;
 		$db = PearDatabase::getInstance();
 		$moduleName = $request->get('source_module');
@@ -57,7 +64,7 @@ class Users_ExportData_Action extends Vtiger_ExportData_Action {
 			}
 
 			$entries = array();
-			for ($i=0; $i<$db->num_rows($result); $i++) {
+			for ($i = 0; $i < $db->num_rows($result); $i++) {
 				$entries[] = $db->fetchByAssoc($result, $i);
 			}
 
@@ -70,7 +77,8 @@ class Users_ExportData_Action extends Vtiger_ExportData_Action {
 	 * @param Vtiger_Request $request
 	 * @return <String> export query
 	 */
-	function getExportQuery(Vtiger_Request $request) {
+	function getExportQuery(Vtiger_Request $request)
+	{
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$cvId = $request->get('viewname');
 		$moduleName = $request->get('source_module');
@@ -84,8 +92,9 @@ class Users_ExportData_Action extends Vtiger_ExportData_Action {
 		$queryGenerator->setFields($acceptedFields);
 		return $queryGenerator->getQuery();
 	}
-	
-	public function validateRequest(Vtiger_Request $request) {
-        $request->validateReadAccess();
-    }
+
+	public function validateRequest(Vtiger_Request $request)
+	{
+		$request->validateReadAccess();
+	}
 }

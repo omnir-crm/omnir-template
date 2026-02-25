@@ -1,6 +1,7 @@
 parameters:
     level: 0
     paths:
+        - include
         - includes
         - modules
         - vtlib

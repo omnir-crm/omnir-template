@@ -8,13 +8,15 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Vtiger_UserReference_UIType extends Vtiger_Base_UIType {
+class Vtiger_UserReference_UIType extends Vtiger_Base_UIType
+{
 
 	/**
 	 * Function to get the Template name for the current UI Type object
 	 * @return <String> - Template Name
 	 */
-	public function getTemplateName() {
+	public function getTemplateName()
+	{
 		return 'uitypes/Reference.tpl';
 	}
 
@@ -23,11 +25,13 @@ class Vtiger_UserReference_UIType extends Vtiger_Base_UIType {
 	 * @param <Integer> crmid of record
 	 * @return <String>
 	 */
-	public function getEditViewDisplayValue($value) {
-		if($value) {
+	public function getEditViewDisplayValue($value)
+	{
+		if ($value) {
 			$userName = getOwnerName($value);
 			return $userName;
 		}
+		return '';
 	}
 
 	/**
@@ -36,15 +40,15 @@ class Vtiger_UserReference_UIType extends Vtiger_Base_UIType {
 	 * @param <Number> $recordId
 	 * @return <String> display value
 	 */
-	public function getDisplayValue($value, $record=false, $recordInstance=false) {
+	public function getDisplayValue($value, $record = false, $recordInstance = false)
+	{
 		$displayValue = $this->getEditViewDisplayValue($value);
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		if ($currentUserModel->isAdminUser()) {
 			$recordModel = Users_Record_Model::getCleanInstance('Users');
 			$recordModel->set('id', $value);
-			return '<a href="'. $recordModel->getDetailViewUrl() .'">'. textlength_check($displayValue) .'</a>';
+			return '<a href="' . $recordModel->getDetailViewUrl() . '">' . textlength_check($displayValue) . '</a>';
 		}
 		return $displayValue;
 	}
-
 }
