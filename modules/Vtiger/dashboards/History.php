@@ -8,9 +8,22 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Vtiger_History_Dashboard extends Vtiger_IndexAjax_View {
+class Vtiger_History_Dashboard extends Vtiger_IndexAjax_View
+{
 
-	public function process(Vtiger_Request $request) {
+	/**
+	 * Restrict "History" widget access to administrator users only.
+	 */
+	public function checkPermission(Vtiger_Request $request)
+	{
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if (!$currentUser->isAdminUser()) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+	}
+
+	public function process(Vtiger_Request $request)
+	{
 		$LIMIT = 10;
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$viewer = $this->getViewer($request);
@@ -18,9 +31,9 @@ class Vtiger_History_Dashboard extends Vtiger_IndexAjax_View {
 		$moduleName = $request->getModule();
 		$historyType = $request->get('historyType');
 		$userId = $request->get('type');
-            
+
 		$page = $request->get('page');
-		if(empty($page)) {
+		if (empty($page)) {
 			$page = 1;
 		}
 		$linkId = $request->get('linkid');
@@ -28,7 +41,7 @@ class Vtiger_History_Dashboard extends Vtiger_IndexAjax_View {
 		$modifiedTime = $request->get('modifiedtime');
 		//Date conversion from user to database format
 		$dates = array();
-		if(!empty($modifiedTime)) {
+		if (!empty($modifiedTime)) {
 			$startDate = Vtiger_Date_UIType::getDBInsertedValue($modifiedTime['start']);
 			$dates['start'] = getValidDBInsertDateTimeValue($startDate . ' 00:00:00');
 			$endDate = Vtiger_Date_UIType::getDBInsertedValue($modifiedTime['end']);
@@ -39,24 +52,24 @@ class Vtiger_History_Dashboard extends Vtiger_IndexAjax_View {
 		$pagingModel->set('limit', $LIMIT);
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$history = $moduleModel->getHistory($pagingModel, $historyType,$userId, $dates);
+		$history = $moduleModel->getHistory($pagingModel, $historyType, $userId, $dates);
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());
-		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments'); 
+		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
 
 		$viewer->assign('CURRENT_USER', $currentUser);
 		$viewer->assign('WIDGET', $widget);
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$viewer->assign('HISTORIES', $history);
 		$viewer->assign('PAGE', $page);
-		$viewer->assign('HISTORY_TYPE', $historyType); 
-		$viewer->assign('NEXTPAGE', ($pagingModel->get('historycount') < $LIMIT)? 0 : $page+1);
+		$viewer->assign('HISTORY_TYPE', $historyType);
+		$viewer->assign('NEXTPAGE', ($pagingModel->get('historycount') < $LIMIT) ? 0 : $page + 1);
 		$viewer->assign('COMMENTS_MODULE_MODEL', $modCommentsModel);
 
 		$userCurrencyInfo = getCurrencySymbolandCRate($currentUser->get('currency_id'));
 		$viewer->assign('USER_CURRENCY_SYMBOL', $userCurrencyInfo['symbol']);
-		
+
 		$content = $request->get('content');
-		if(!empty($content)) {
+		if (!empty($content)) {
 			$viewer->view('dashboards/HistoryContents.tpl', $moduleName);
 		} else {
 			$accessibleUsers = $currentUser->getAccessibleUsers();
