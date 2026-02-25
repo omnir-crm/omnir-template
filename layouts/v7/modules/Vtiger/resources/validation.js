@@ -354,7 +354,7 @@ jQuery.validator.addMethod("time", function(value, element, params) {
 
 jQuery.validator.addMethod("email", function(value, element, params) {
 		value = value.trim();
-		var emailFilter = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`'{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\.]?[a-zA-Z0-9\-]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
+		var emailFilter = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 		if(!value) return true;
 
@@ -366,7 +366,7 @@ jQuery.validator.addMethod("email", function(value, element, params) {
 );
 
 jQuery.validator.addMethod("multiEmails", function(value, element, params) {
-		var emailFilter = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`'{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\.]?[a-zA-Z0-9\-]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
+		var emailFilter = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 		if(!value) return true;
 		var fieldValuesList = value.split(',');
