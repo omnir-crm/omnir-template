@@ -1,0 +1,7 @@
+.git
+db-data
+.claude
+_bmad
+.dockerignore
+.gitignore
+docker-compose.yml

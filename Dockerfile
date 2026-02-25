@@ -29,8 +29,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     imap \
     && docker-php-ext-enable opcache
 
-# 3. Enable Apache's rewrite module
+# 3. Enable Apache's rewrite module and allow .htaccess overrides
 RUN a2enmod rewrite
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 # 4. Set PHP limits and development settings
 RUN { \
@@ -43,9 +45,24 @@ RUN { \
     echo 'error_reporting = E_ALL'; \
     } > /usr/local/etc/php/conf.d/vtiger-php.ini
 
-# 5. Entrypoint configuration
+WORKDIR /var/www/html
+
+# 5. Copy application files into the image
+COPY . /var/www/html/
+
+# 6. Install composer dependencies
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --no-interaction --optimize-autoloader 2>/dev/null || true
+
+# 7. Ensure proper ownership and writable directories for Apache
+RUN chown -R www-data:www-data /var/www/html
+RUN mkdir -p storage logs test/templates_c test/logo \
+    && chown -R www-data:www-data storage logs test
+
+# 8. Entrypoint configuration
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 
+EXPOSE 80
 CMD ["apache2-foreground"]

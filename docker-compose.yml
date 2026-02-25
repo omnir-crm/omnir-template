@@ -11,10 +11,16 @@ services:
       - VT_DB_USER=vtiger_user
       - VT_DB_PASSWORD=vtiger_password
     volumes:
-      - ./vtiger-data:/var/www/html
-      - ./vtiger8.tar:/tmp/vtiger.tar
+      - .:/var/www/html
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/index.php"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   db:
     image: mysql:5.7
@@ -27,5 +33,9 @@ services:
       - MYSQL_PASSWORD=vtiger_password
     volumes:
       - ./db-data:/var/lib/mysql
-      # Automatically seeds the database for new environments
-      - ./vtiger_base_setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
