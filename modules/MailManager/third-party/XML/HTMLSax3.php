@@ -558,6 +558,7 @@ class XML_HTMLSax3 {
         } else {
             require_once('PEAR.php');
             PEAR::raiseError('XML_HTMLSax3::set_option('.$name.') illegal');
+            return false;
         }
     }
 

@@ -8,18 +8,21 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Settings_Vtiger_TermsAndConditionsSaveAjax_Action extends Settings_Vtiger_Basic_Action {
-    
-    public function process(Vtiger_Request $request) {
-        $model = Settings_Vtiger_TermsAndConditions_Model::getInstance();
+class Settings_Vtiger_TermsAndConditionsSaveAjax_Action extends Settings_Vtiger_Basic_Action
+{
+
+    public function process(Vtiger_Request $request)
+    {
+        $model = Settings_Vtiger_TermsAndConditions_Model::getInstance('Inventory');
         $model->setText($request->get('tandc'));
         $model->save();
-        
+
         $response = new Vtiger_Response();
         $response->emit();
     }
-    
-    public function validateRequest(Vtiger_Request $request) { 
-        $request->validateWriteAccess(); 
-    } 
+
+    public function validateRequest(Vtiger_Request $request)
+    {
+        $request->validateWriteAccess();
+    }
 }

@@ -17,6 +17,7 @@ class Mobile_HTML_Viewer extends Vtiger_Viewer{
 	
 	function assign($key, $value = null, $nocache = false) {
 		$this->parameters[$key] = $value;
+		return $this;
 	}
 
 	function viewController() {

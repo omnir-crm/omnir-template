@@ -8,17 +8,21 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
+class ModComments_FilePreview_View extends Vtiger_IndexAjax_View
+{
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 
 		if (!Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $request->get('record'))) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 		$attachmentId = $request->get('attachmentid');
@@ -36,15 +40,15 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
 		if (!empty($fileDetails)) {
 			$filePath = $fileDetails['path'];
 			$fileName = $fileDetails['name'];
-            $storedFileName = $fileDetails['storedname'];
+			$storedFileName = $fileDetails['storedname'];
 			$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-			$savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
+			$savedFile = $fileDetails['attachmentsid'] . "_" . $storedFileName;
 
-			$fileSize = filesize($filePath.$savedFile);
+			$fileSize = filesize($filePath . $savedFile);
 			$fileSize = $fileSize + ($fileSize % 1024);
 
-			if (fopen($filePath.$savedFile, "r")) {
-				$fileContent = fread(fopen($filePath.$savedFile, "r"), $fileSize);
+			if (fopen($filePath . $savedFile, "r")) {
+				$fileContent = fread(fopen($filePath . $savedFile, "r"), $fileSize);
 			}
 		}
 
@@ -53,10 +57,10 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
 		$filename = $fileDetails['name'];
 		$parts = explode('.', $filename);
 		if ($recordModel->get('filename')) {
-                    $fileDetails = $recordModel->getFileNameAndDownloadURL($recordId, $attachmentId);
-                    $downloadUrl =  $recordModel->getDownloadFileURL($attachmentId);
-                    $trimmedFileName = $fileDetails[0]['trimmedFileName'];
-                }
+			$fileDetails = $recordModel->getFileNameAndDownloadURL($recordId, $attachmentId);
+			$downloadUrl =  $recordModel->getDownloadFileURL($attachmentId);
+			$trimmedFileName = $fileDetails[0]['trimmedFileName'];
+		}
 
 		//support for plain/text document
 		$extn = 'txt';
@@ -92,5 +96,4 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
 
 		echo $viewer->view('FilePreview.tpl', $moduleName, true);
 	}
-
 }

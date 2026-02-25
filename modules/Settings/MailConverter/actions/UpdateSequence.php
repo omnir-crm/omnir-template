@@ -8,18 +8,22 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Settings_MailConverter_UpdateSequence_Action extends Settings_Vtiger_Index_Action {
+class Settings_MailConverter_UpdateSequence_Action extends Settings_Vtiger_Index_Action
+{
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		parent::checkPermission($request);
 		$scannerId = $request->get('scannerId');
 
 		if (!$scannerId) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $request->getModule(false)));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$qualifiedModuleName = $request->getModule(false);
 		$scannerId = $request->get('scannerId');
 		$sequencesList = $request->get('sequencesList');
@@ -36,8 +40,9 @@ class Settings_MailConverter_UpdateSequence_Action extends Settings_Vtiger_Index
 
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+
+	public function validateRequest(Vtiger_Request $request)
+	{
+		$request->validateWriteAccess();
+	}
 }

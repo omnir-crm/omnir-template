@@ -8,9 +8,11 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Settings_MailConverter_DeleteRule_Action extends Settings_Vtiger_Index_Action {
+class Settings_MailConverter_DeleteRule_Action extends Settings_Vtiger_Index_Action
+{
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		parent::checkPermission($request);
 		$recordId = $request->get('record');
 		$scannerId = $request->get('scannerId');
@@ -18,9 +20,11 @@ class Settings_MailConverter_DeleteRule_Action extends Settings_Vtiger_Index_Act
 		if (!$recordId || !$scannerId) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $request->getModule(false)));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 
@@ -36,8 +40,9 @@ class Settings_MailConverter_DeleteRule_Action extends Settings_Vtiger_Index_Act
 		}
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+
+	public function validateRequest(Vtiger_Request $request)
+	{
+		$request->validateWriteAccess();
+	}
 }

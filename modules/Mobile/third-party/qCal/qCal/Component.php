@@ -323,7 +323,7 @@ abstract class qCal_Component {
 		if ($this->hasProperty($name)) {
 			return $this->properties[$name];
 		}
-	
+		return array();
 	}
 	
 	/**

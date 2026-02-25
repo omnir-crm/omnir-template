@@ -8,9 +8,11 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Settings_MailConverter_SaveRule_Action extends Settings_Vtiger_Index_Action {
+class Settings_MailConverter_SaveRule_Action extends Settings_Vtiger_Index_Action
+{
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		parent::checkPermission($request);
 		$recordId = $request->get('record');
 		$scannerId = $request->get('scannerId');
@@ -18,9 +20,11 @@ class Settings_MailConverter_SaveRule_Action extends Settings_Vtiger_Index_Actio
 		if (!$scannerId) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $request->getModule(false)));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$recordId = $request->get('record');
 		$scannerId = $request->get('scannerId');
 		$action = $request->get('action1');
@@ -48,8 +52,9 @@ class Settings_MailConverter_SaveRule_Action extends Settings_Vtiger_Index_Actio
 		$response->setResult(array('message' => vtranslate('LBL_SAVED_SUCCESSFULLY', $qualifiedModuleName), 'id' => $ruleId, 'scannerId' => $scannerId));
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        }
+
+	public function validateRequest(Vtiger_Request $request)
+	{
+		$request->validateWriteAccess();
+	}
 }

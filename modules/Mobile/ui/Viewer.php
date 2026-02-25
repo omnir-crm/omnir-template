@@ -15,6 +15,7 @@ class Mobile_UI_Viewer extends Vtiger_Viewer{
 	private $parameters = array();
 	function assign($key, $value = null, $nocache = false) {
 		$this->parameters[$key] = $value;
+		return $this;
 	}
 
 	function viewController() {

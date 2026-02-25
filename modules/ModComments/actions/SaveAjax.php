@@ -17,6 +17,7 @@ class ModComments_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		if ($record) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

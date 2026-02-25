@@ -17,5 +17,6 @@ Class ModComments_Edit_View extends Vtiger_Edit_View {
 		if (!empty($record) || !Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+		return true;
 	}
 }

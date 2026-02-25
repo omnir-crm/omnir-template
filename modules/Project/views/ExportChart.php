@@ -8,9 +8,11 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Project_ExportChart_View extends Vtiger_Index_View {
+class Project_ExportChart_View extends Vtiger_Index_View
+{
 
-	function checkPermission(Vtiger_Request $request) {
+	function checkPermission(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$moduleModel = Reports_Module_Model::getInstance($moduleName);
 
@@ -21,17 +23,21 @@ class Project_ExportChart_View extends Vtiger_Index_View {
 		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+		return true;
 	}
 
-	function preProcess(Vtiger_Request $request, $display=true) {
+	function preProcess(Vtiger_Request $request, $display = true)
+	{
 		return false;
 	}
 
-	function postProcess(Vtiger_Request $request) {
+	function postProcess(Vtiger_Request $request)
+	{
 		return false;
 	}
 
-	function process(Vtiger_request $request) {
+	function process(Vtiger_request $request)
+	{
 		$this->GetPrintReport($request);
 	}
 
@@ -39,7 +45,8 @@ class Project_ExportChart_View extends Vtiger_Index_View {
 	 * Function displays the report in printable format
 	 * @param Vtiger_Request $request
 	 */
-	function GetPrintReport(Vtiger_Request $request) {
+	function GetPrintReport(Vtiger_Request $request)
+	{
 		$parentId = $request->get('record');
 		$projectTasks = array();
 		$moduleName = $request->getModule();

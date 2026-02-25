@@ -8,18 +8,22 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Settings_MailConverter_ScanNow_Action extends Settings_Vtiger_Index_Action {
+class Settings_MailConverter_ScanNow_Action extends Settings_Vtiger_Index_Action
+{
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		parent::checkPermission($request);
 		$recordId = $request->get('record');
 
 		if (!$recordId) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $request->getModule(false)));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 
@@ -28,13 +32,13 @@ class Settings_MailConverter_ScanNow_Action extends Settings_Vtiger_Index_Action
 
 		$response = new Vtiger_Response();
 		if (is_bool($status) && $status) {
-			$result = array('message'=> vtranslate('LBL_SCANNED_SUCCESSFULLY', $qualifiedModuleName));
+			$result = array('message' => vtranslate('LBL_SCANNED_SUCCESSFULLY', $qualifiedModuleName));
 			$result['id'] = $recordModel->getId();
 			$response->setResult($result);
 		} else if ($status) {
 			$response->setError($status);
 		} else {
-			$response->setError(vtranslate($request->getModule(), $qualifiedModuleName).' '.vtranslate('LBL_IS_IN_RUNNING_STATE', $qualifiedModuleName));
+			$response->setError(vtranslate($request->getModule(), $qualifiedModuleName) . ' ' . vtranslate('LBL_IS_IN_RUNNING_STATE', $qualifiedModuleName));
 		}
 		$response->emit();
 	}

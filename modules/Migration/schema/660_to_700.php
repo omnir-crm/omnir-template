@@ -1054,7 +1054,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$blocks = $module->getBlocks();
 	$block = current($blocks);
 
-	$field = new vtiger_field();
+	$field = new Vtiger_Field();
 	$field->label = 'Click Count';
 	$field->name = 'click_count';
 	$field->table = 'vtiger_email_track';
@@ -1551,7 +1551,7 @@ if(defined('VTIGER_UPGRADE')) {
 			$taxIdsList[] = $rowData['taxid'];
 		}
 
-		$db->pquery('INSERT INTO vtiger_inventorycharges VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array(1, 'Shipping & Handling', 'Flat', 'Fixed', 0, '[]', 1, ZEND_JSON::encode($taxIdsList), 0));
+		$db->pquery('INSERT INTO vtiger_inventorycharges VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array(1, 'Shipping & Handling', 'Flat', 'Fixed', 0, '[]', 1, Zend_Json::encode($taxIdsList), 0));
 	}
 
 	if (!Vtiger_Utils::checkTable('vtiger_inventorychargesrel')) {

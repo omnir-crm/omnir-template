@@ -8,28 +8,33 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_Index_Action {
+class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_Index_Action
+{
 
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct();
 		$this->exposeMethod('getModuleCustomNumberingData');
 		$this->exposeMethod('saveModuleCustomNumberingData');
 		$this->exposeMethod('updateRecordsWithSequenceNumber');
 	}
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		parent::checkPermission($request);
 		$qualifiedModuleName = $request->getModule(false);
 		$sourceModule = $request->get('sourceModule');
 
-		if(!$sourceModule) {
+		if (!$sourceModule) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $qualifiedModuleName));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$mode = $request->getMode();
-		if(!empty($mode)) {
+		if (!empty($mode)) {
 			echo $this->invokeExposedMethod($mode, $request);
 			return;
 		}
@@ -39,12 +44,13 @@ class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_I
 	 * Function to get Module custom numbering data
 	 * @param Vtiger_Request $request
 	 */
-	public function getModuleCustomNumberingData(Vtiger_Request $request) {
+	public function getModuleCustomNumberingData(Vtiger_Request $request)
+	{
 		$sourceModule = $request->get('sourceModule');
 
 		$moduleModel = Settings_Vtiger_CustomRecordNumberingModule_Model::getInstance($sourceModule);
 		$moduleData = $moduleModel->getModuleCustomNumberingData();
-		
+
 		$response = new Vtiger_Response();
 		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
 		$response->setResult($moduleData);
@@ -55,7 +61,8 @@ class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_I
 	 * Function save module custom numbering data
 	 * @param Vtiger_Request $request
 	 */
-	public function saveModuleCustomNumberingData(Vtiger_Request $request) {
+	public function saveModuleCustomNumberingData(Vtiger_Request $request)
+	{
 		$qualifiedModuleName = $request->getModule(false);
 		$sourceModule = $request->get('sourceModule');
 
@@ -79,7 +86,8 @@ class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_I
 	 * Function to update record with sequence number
 	 * @param Vtiger_Request $request
 	 */
-	public function updateRecordsWithSequenceNumber(Vtiger_Request $request) {
+	public function updateRecordsWithSequenceNumber(Vtiger_Request $request)
+	{
 		$sourceModule = $request->get('sourceModule');
 
 		$moduleModel = Settings_Vtiger_CustomRecordNumberingModule_Model::getInstance($sourceModule);
@@ -89,8 +97,9 @@ class Settings_Vtiger_CustomRecordNumberingAjax_Action extends Settings_Vtiger_I
 		$response->setResult($result);
 		$response->emit();
 	}
-    
-    public function validateRequest(Vtiger_Request $request) {
-        $request->validateWriteAccess();
-    }
+
+	public function validateRequest(Vtiger_Request $request)
+	{
+		$request->validateWriteAccess();
+	}
 }

@@ -18,6 +18,7 @@ class ModComments_MassSaveAjax_Action extends Vtiger_Mass_Action {
 		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Save')) {
 			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

@@ -15,6 +15,7 @@ class ModComments_DownloadFile_Action extends Vtiger_Action_Controller {
 		if (!Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $request->get('record'))) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

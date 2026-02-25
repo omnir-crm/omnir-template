@@ -8,24 +8,28 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class SMSNotifier_CheckServerInfo_Action extends Vtiger_Action_Controller {
+class SMSNotifier_CheckServerInfo_Action extends Vtiger_Action_Controller
+{
 
-	function checkPermission(Vtiger_Request $request) {
+	function checkPermission(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
+		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
+			throw new AppException(vtranslate($moduleName, $moduleName) . ' ' . vtranslate('LBL_NOT_ACCESSIBLE'));
 		}
+		return true;
 	}
 
-	function process(Vtiger_Request $request) {
+	function process(Vtiger_Request $request)
+	{
 		$db = PearDatabase::getInstance();
 		$response = new Vtiger_Response();
 
 		$result = $db->pquery('SELECT 1 FROM vtiger_smsnotifier_servers WHERE isactive = 1', array());
-		if($db->num_rows($result)) {
+		if ($db->num_rows($result)) {
 			$response->setResult(true);
 		} else {
 			$response->setResult(false);

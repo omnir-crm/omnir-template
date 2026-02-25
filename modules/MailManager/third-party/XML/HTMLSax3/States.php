@@ -127,7 +127,7 @@ class XML_HTMLSax3_OpeningTagState {
     * Handles attributes
     * @param string attribute name
     * @param string attribute value
-    * @return void
+    * @return array
     * @access protected
     * @see XML_HTMLSax3_AttributeStartState
     */

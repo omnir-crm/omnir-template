@@ -8,17 +8,21 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View {
+class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
+{
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 
 		if (!(Users_Privileges_Model::isPermitted($moduleName, 'EditView'))) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
 		}
+		return true;
 	}
 
-	public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$projectId = $request->get('parentid');
 		$recordId = $request->get('record');
@@ -33,7 +37,7 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View {
 
 		$fieldList = $moduleModel->getFields();
 		$fieldsInfo = array();
-		foreach($fieldList as $name => $model){
+		foreach ($fieldList as $name => $model) {
 			$fieldsInfo[$name] = $model->getFieldInfo();
 		}
 		$requestFieldList = array_intersect_key($request->getAll(), $fieldList);
@@ -46,11 +50,11 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View {
 		$picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
 
 		$viewer = $this->getViewer($request);
-		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE',Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
+		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
 		$viewer->assign('RECORD', $recordId);
 		$viewer->assign('CURRENTDATE', date('Y-n-j'));
 		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('SINGLE_MODULE', 'SINGLE_'.$moduleName);
+		$viewer->assign('SINGLE_MODULE', 'SINGLE_' . $moduleName);
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
@@ -69,7 +73,8 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->view('QuickEdit.tpl', $moduleName);
 	}
 
-	public function getHeaderScripts(Vtiger_Request $request) {
+	public function getHeaderScripts(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$jsFileNames = array(
 			"modules.$moduleName.resources.Edit"
@@ -77,5 +82,4 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View {
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		return $jsScriptInstances;
 	}
-
 }

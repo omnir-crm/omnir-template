@@ -8,28 +8,37 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Oauth2_Config implements ArrayAccess {
+class Oauth2_Config implements ArrayAccess
+{
 
     protected $data;
 
-    protected function __construct($data) {
+    protected function __construct($data)
+    {
         $this->data = $data;
     }
 
-    public function offsetExists($key) {
+    #[\ReturnTypeWillChange]
+    public function offsetExists($key)
+    {
         return isset($this->data[$key]);
     }
 
-    public function offsetGet($key) {
-        return isset($this->data[$key])? $this->data[$key] : null;
+    #[\ReturnTypeWillChange]
+    public function offsetGet($key)
+    {
+        return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $value) {}
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key) {}
 
-    protected function initProviderConfig($config, $forprovider) {
+    protected function initProviderConfig($config, $forprovider)
+    {
         global $site_URL;
-        
+
         switch (strtoupper($forprovider)) {
             case "GOOGLE":
                 if (!isset($config["urlAuthorize"])) {
@@ -61,13 +70,15 @@ class Oauth2_Config implements ArrayAccess {
         return $config;
     }
 
-    public function getProviderConfig($provider) {
+    public function getProviderConfig($provider)
+    {
         return isset($this->data[$provider]) ? $this->initProviderConfig($this->data[$provider], $provider) : null;
     }
 
     protected static $singleton;
 
-    public static function loadConfig($data) {
+    public static function loadConfig($data)
+    {
         if (!static::$singleton) {
             static::$singleton = new self($data);
         }

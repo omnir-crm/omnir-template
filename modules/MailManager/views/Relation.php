@@ -395,6 +395,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 		} else {
 			return $parent;
 		}
+		return 0;
 	}
 
 

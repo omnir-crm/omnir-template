@@ -8,34 +8,38 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class Reports_ListViewQuickPreview_View extends Vtiger_ListViewQuickPreview_View {
+class Reports_ListViewQuickPreview_View extends Vtiger_ListViewQuickPreview_View
+{
 
-    public function checkPermission(Vtiger_Request $request) {
+	public function checkPermission(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$moduleModel = Reports_Module_Model::getInstance($moduleName);
 
 		$record = $request->get('record');
 
-        if(!empty($record) && !Reports_Record_Model::isReportExists($record)) {
+		if (!empty($record) && !Reports_Record_Model::isReportExists($record)) {
 			throw new AppException(vtranslate('LBL_RECORD_NOT_FOUND'));
 		}
 
 		$reportModel = Reports_Record_Model::getCleanInstance($record);
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		
+
 		$owner = $reportModel->get('owner');
-        $sharingType = $reportModel->get('sharingtype');
-		
+		$sharingType = $reportModel->get('sharingtype');
+
 		$isRecordShared = true;
-		if(($currentUserPriviligesModel->id != $owner) && $sharingType == "Private"){
+		if (($currentUserPriviligesModel->id != $owner) && $sharingType == "Private") {
 			$isRecordShared = $reportModel->isRecordHasViewAccess($sharingType);
 		}
-		if(!$isRecordShared || !$currentUserPriviligesModel->hasModulePermission($moduleModel->getId()) || $reportModel->isCustom()) {
-            throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-        }
+		if (!$isRecordShared || !$currentUserPriviligesModel->hasModulePermission($moduleModel->getId()) || $reportModel->isCustom()) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+		return true;
 	}
-    
-    function process(Vtiger_Request $request) {
+
+	function process(Vtiger_Request $request)
+	{
 		$moduleName = $request->getModule();
 		$viewer = $this->getViewer($request);
 		$record = $request->get('record');
