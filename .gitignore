@@ -9,5 +9,12 @@ storage/
 db-data/
 config.inc.php
 config.csrf-secret.php
+test/templates_c/
+user_privileges/user_privileges_*.php
+user_privileges/sharing_privileges_*.php
+!user_privileges/user_privileges_1.php
+!user_privileges/sharing_privileges_1.php
+composer
+phpstan-output.json
 *.tar.gz
 *.sql
