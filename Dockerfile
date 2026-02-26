@@ -1,43 +1,14 @@
-FROM php:8.1-apache-bullseye
+FROM php:8.1-apache
 
-# Fixes Exit Code 100 on older Debian bases
-RUN apt-get update --allow-releaseinfo-change && \
-    apt-get install -y --no-install-recommends \
+# Install required Vtiger 8.4 PHP extensions
+RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
-    libicu-dev \
     libzip-dev \
-    libonig-dev \
-    libxml2-dev \
-    libc-client-dev \
-    libkrb5-dev \
-    libcurl4-openssl-dev \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
+    libicu-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd mysqli pdo_mysql zip intl
 
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    && docker-php-ext-install -j$(nproc) \
-    mysqli \
-    gd \
-    zip \
-    bcmath \
-    intl \
-    mbstring \
-    curl \
-    imap \
-    && docker-php-ext-enable opcache
-
-# Professional PHP configurations for vTiger
-RUN { \
-    echo 'display_errors = Off'; \
-    echo 'file_uploads = On'; \
-    echo 'post_max_size = 256M'; \
-    echo 'upload_max_filesize = 256M'; \
-    echo 'memory_limit = 512M'; \
-    echo 'max_execution_time = 300'; \
-    echo 'date.timezone = UTC'; \
-    } > /usr/local/etc/php/conf.d/vtiger-php.ini
-
+# Enable Apache rewrite for Vtiger URL handling
 RUN a2enmod rewrite

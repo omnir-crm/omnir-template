@@ -3,29 +3,32 @@ services:
     build: .
     container_name: omnir_crm_app
     restart: always
-    user: "1000:1000"
     ports:
       - "8080:80"
     environment:
       - VT_DB_HOST=db
-      - VT_DB_NAME=${DB_NAME}
-      - VT_DB_USER=${DB_USER}
-      - VT_DB_PASSWORD=${DB_PASSWORD}
+      - VT_DB_NAME=teamguy2000
+      - VT_DB_USER=teamguy2000
+      - VT_DB_PASSWORD=teamguy2000
     volumes:
       - .:/var/www/html
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:5.7
     container_name: omnir_crm_db
     restart: always
-    ports:
-      - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=teamguy2000
+      - MYSQL_DATABASE=teamguy2000
+      - MYSQL_USER=teamguy2000
+      - MYSQL_PASSWORD=teamguy2000
     volumes:
       - ./db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
