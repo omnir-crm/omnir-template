@@ -51,5 +51,3 @@
 	PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
 		</table>
-	</tables>
-</schema>

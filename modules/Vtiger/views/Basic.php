@@ -48,9 +48,11 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 		$moduleFound = false;
 
 		$menuGroupedByParent = Settings_MenuEditor_Module_Model::getAllVisibleModules();
-		$supportGroup = $menuGroupedByParent['SUPPORT'];
-		unset($menuGroupedByParent['SUPPORT']);
-		$menuGroupedByParent['SUPPORT'] = $supportGroup;
+		if (isset($menuGroupedByParent['SUPPORT'])) {
+			$supportGroup = $menuGroupedByParent['SUPPORT'];
+			unset($menuGroupedByParent['SUPPORT']);
+			$menuGroupedByParent['SUPPORT'] = $supportGroup;
+		}
         $parentApp = $request->get('app');
 
 		foreach ($menuGroupedByParent as $parentCategory => $menuList) {
@@ -73,7 +75,8 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 
 		$viewer->assign('SELECTED_MENU_CATEGORY',$selectedModuleMenuCategory);
 		$viewer->assign('SELECTED_MENU_CATEGORY_LABEL', $selectedMenuCategoryLabel);
-		$viewer->assign('SELECTED_CATEGORY_MENU_LIST',$menuGroupedByParent[$selectedModuleMenuCategory]);
+		$selectedCategoryMenuList = isset($menuGroupedByParent[$selectedModuleMenuCategory]) ? $menuGroupedByParent[$selectedModuleMenuCategory] : array();
+		$viewer->assign('SELECTED_CATEGORY_MENU_LIST', $selectedCategoryMenuList);
 		$viewer->assign('MENUS', $menuModelsList);
 		$viewer->assign('QUICK_CREATE_MODULES', Vtiger_Menu_Model::getAllForQuickCreate());
 		$viewer->assign('MENU_STRUCTURE', $menuStructure);
