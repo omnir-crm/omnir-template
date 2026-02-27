@@ -14,9 +14,13 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite
 
 # Set Recommended PHP Settings
-RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/vtiger.ini \
+RUN echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/vtiger.ini \
     && echo "max_execution_time = 600" >> /usr/local/etc/php/conf.d/vtiger.ini \
+    && echo "max_input_time = 600" >> /usr/local/etc/php/conf.d/vtiger.ini \
     && echo "error_reporting = E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT" >> /usr/local/etc/php/conf.d/vtiger.ini \
     && echo "display_errors = Off" >> /usr/local/etc/php/conf.d/vtiger.ini \
     && echo "short_open_tag = On" >> /usr/local/etc/php/conf.d/vtiger.ini \
     && echo "log_errors = On" >> /usr/local/etc/php/conf.d/vtiger.ini
+
+# Ensure the web server can write to the directory
+RUN chown -R www-data:www-data /var/www/html
