@@ -20,7 +20,7 @@
 		{assign var=HOME_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Home')}
 		{assign var=DASHBOARD_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Dashboard')}
 		<div class="app-list row">
-			{if $USER_PRIVILEGES_MODEL->hasModulePermission($DASHBOARD_MODULE_MODEL->getId())}
+			{if $DASHBOARD_MODULE_MODEL && $USER_PRIVILEGES_MODEL->hasModulePermission($DASHBOARD_MODULE_MODEL->getId())}
 				<div class="menu-item app-item dropdown-toggle" data-default-url="{$HOME_MODULE_MODEL->getDefaultUrl()}">
 					<div class="menu-items-wrapper">
 						<span class="app-icon-list fa fa-dashboard"></span>
@@ -64,7 +64,7 @@
 			{/foreach}
 			<div class="app-list-divider"></div>
 			{assign var=MAILMANAGER_MODULE_MODEL value=Vtiger_Module_Model::getInstance('MailManager')}
-			{if $USER_PRIVILEGES_MODEL->hasModulePermission($MAILMANAGER_MODULE_MODEL->getId())}
+			{if $MAILMANAGER_MODULE_MODEL && $USER_PRIVILEGES_MODEL->hasModulePermission($MAILMANAGER_MODULE_MODEL->getId())}
 				<div class="menu-item app-item app-item-misc" data-default-url="index.php?module=MailManager&view=List">
 					<div class="menu-items-wrapper">
 						<span class="app-icon-list fa">{$MAILMANAGER_MODULE_MODEL->getModuleIcon()}</span>
@@ -73,7 +73,7 @@
 				</div>
 			{/if}
 			{assign var=DOCUMENTS_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Documents')}
-			{if $USER_PRIVILEGES_MODEL->hasModulePermission($DOCUMENTS_MODULE_MODEL->getId())}
+			{if $DOCUMENTS_MODULE_MODEL && $USER_PRIVILEGES_MODEL->hasModulePermission($DOCUMENTS_MODULE_MODEL->getId())}
 				<div class="menu-item app-item app-item-misc" data-default-url="index.php?module=Documents&view=List">
 					<div class="menu-items-wrapper">
 						<span class="app-icon-list fa">{$DOCUMENTS_MODULE_MODEL->getModuleIcon()}</span>
