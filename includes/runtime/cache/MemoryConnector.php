@@ -38,7 +38,12 @@ class Vtiger_Cache_MemoryConnector {
 
 	private function prepareKey($key) {
 		if (is_scalar($key)) return $key;
-		return md5(serialize($key));
+		try {
+			// Some objects like SimpleXMLElement cannot be serialized natively
+			return md5(serialize($key));
+		} catch (\Throwable $e) {
+			return md5(json_encode($key, JSON_PARTIAL_OUTPUT_ON_ERROR));
+		}
 	}
 
 	public function flush() {
