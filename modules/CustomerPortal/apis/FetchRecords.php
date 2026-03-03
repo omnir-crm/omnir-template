@@ -8,11 +8,14 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract {
+class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract
+{
 
-	function process(CustomerPortal_API_Request $request) {
+	function process(CustomerPortal_API_Request $request)
+	{
 		$response = new CustomerPortal_API_Response();
 		$current_user = $this->getActiveUser();
+		$result = array();
 
 		if ($current_user) {
 			$customerId = $this->getActiveCustomer()->id;
@@ -68,15 +71,14 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract {
 			$count = null;
 
 			if ($fieldsArray !== null) {
-				if(is_iterable($fieldsArray)){
+				if (is_iterable($fieldsArray)) {
 					foreach ($fieldsArray as $key => $value) {
 						if (!in_array($key, $activeFields)) {
-							throw new Exception($key." is not accessible.", 1412);
+							throw new Exception($key . " is not accessible.", 1412);
 							exit;
 						}
 					}
 				}
-				
 			}
 			$fields = implode(',', $activeFields);
 
@@ -86,8 +88,8 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract {
 					$sql = sprintf('SELECT %s FROM Faq WHERE faqstatus=\'Published\' AND ', $fields);
 
 					foreach ($fieldsArray as $key => $value) {
-						$countSql.= $key.'=\''.$value."' ".$groupConditionsBy." ";
-						$sql.= $key.'=\''.$value."' ".$groupConditionsBy." ";
+						$countSql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
+						$sql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
 					}
 					$countSql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, ';', $countSql);
 					$sql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $sql);
@@ -113,8 +115,8 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract {
 					$sql = sprintf('SELECT %s FROM %s WHERE ', $fields, $module);
 
 					foreach ($fieldsArray as $key => $value) {
-						$countSql.= $key.'=\''.$value."' ".$groupConditionsBy." ";
-						$sql.= $key.'=\''.$value."' ".$groupConditionsBy." ";
+						$countSql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
+						$sql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
 					}
 
 					$countSql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $countSql);
@@ -135,7 +137,7 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract {
 						$countSql = sprintf('SELECT count(*) FROM %s;', $module);
 						$sql = sprintf('SELECT %s FROM %s', $fields, $module);
 						$limitClause = sprintf('ORDER BY %s %s LIMIT %s,%s;', $orderBy, $order, ($page * $pageLimit), $pageLimit);
-						$sql = $sql.' '.$limitClause;
+						$sql = $sql . ' ' . $limitClause;
 						$result = vtws_query($sql, $current_user);
 						$countResult = vtws_query($countSql, $current_user);
 						$count = $countResult && isset($countResult[0]['count']) ? $countResult[0]['count'] : '';
@@ -145,8 +147,7 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract {
 								$relatedId = $accountId;
 							else
 								$relatedId = $contactWebserviceId;
-						}
-						else {
+						} else {
 							$relatedId = $contactWebserviceId;
 						}
 
@@ -168,5 +169,4 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract {
 			return $response;
 		}
 	}
-
 }

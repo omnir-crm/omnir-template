@@ -8,9 +8,11 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_DescribeModule extends CustomerPortal_API_Abstract {
+class CustomerPortal_DescribeModule extends CustomerPortal_API_Abstract
+{
 
-	function process(CustomerPortal_API_Request $request) {
+	function process(CustomerPortal_API_Request $request)
+	{
 		$current_user = $this->getActiveUser();
 		$response = new CustomerPortal_API_Response();
 
@@ -26,6 +28,7 @@ class CustomerPortal_DescribeModule extends CustomerPortal_API_Abstract {
 			// Get active fields with read, write permissions
 			$activeFields = CustomerPortal_Utils::getActiveFields($module, true);
 			$activeFieldKeys = array_keys($activeFields);
+			$fieldList = array();
 			foreach ($describeInfo['fields'] as $key => $value) {
 				if (!in_array($value['name'], $activeFieldKeys)) {
 					unset($describeInfo['fields'][$key]);
@@ -74,5 +77,4 @@ class CustomerPortal_DescribeModule extends CustomerPortal_API_Abstract {
 		}
 		return $response;
 	}
-
 }

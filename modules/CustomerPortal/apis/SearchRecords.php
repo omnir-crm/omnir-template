@@ -8,9 +8,11 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_SearchRecords extends CustomerPortal_API_Abstract {
+class CustomerPortal_SearchRecords extends CustomerPortal_API_Abstract
+{
 
-	function process(CustomerPortal_API_Request $request) {
+	function process(CustomerPortal_API_Request $request)
+	{
 		$response = new CustomerPortal_API_Response();
 		$current_user = $this->getActiveUser();
 		global $adb;
@@ -19,12 +21,12 @@ class CustomerPortal_SearchRecords extends CustomerPortal_API_Abstract {
 			$searchKey = $request->get('searchKey');
 			$orderBy = 'modifiedtime';
 
+			$searchResult = array();
+
 			if (!empty($searchKey)) {
 				$portalActiveModules = CustomerPortal_Utils::getActiveModules();
 
 				if (!empty($portalActiveModules)) {
-					$searchResult = array();
-
 					foreach ($portalActiveModules as $key => $module) {
 						$moduleModel = Vtiger_Module_Model::getInstance($module);
 						//Restricting search to Contact related modules
@@ -73,16 +75,16 @@ class CustomerPortal_SearchRecords extends CustomerPortal_API_Abstract {
 								}
 							}
 
-							$whereClause = "crmid IN ('".implode("','", $relatedRecordCRMIds)."')";
+							$whereClause = "crmid IN ('" . implode("','", $relatedRecordCRMIds) . "')";
 							if (stripos($query, 'WHERE') == false) {
-								$query .= " WHERE ".$whereClause;
+								$query .= " WHERE " . $whereClause;
 							} else {
 								$queryParts = explode('WHERE', $query);
 								// adding crmid into query select fields list 
 								$subParts = explode('FROM', $queryParts[0]);
-								$queryParts[0] = $subParts[0].",vtiger_crmentity.crmid FROM ".$subParts[1];
-								$query = $queryParts[0]." WHERE ".$whereClause;
-								$query .= " AND (".$queryParts[1].")";
+								$queryParts[0] = $subParts[0] . ",vtiger_crmentity.crmid FROM " . $subParts[1];
+								$query = $queryParts[0] . " WHERE " . $whereClause;
+								$query .= " AND (" . $queryParts[1] . ")";
 							}
 							$query = sprintf('%s ORDER BY %s %s', $query, $orderBy, 'DESC');
 							$queryResult = $adb->pquery($query, array());
@@ -103,7 +105,7 @@ class CustomerPortal_SearchRecords extends CustomerPortal_API_Abstract {
 								$label = '';
 								foreach ($labelFieldsArray as $labelField) {
 									$fieldModel = Vtiger_Field_Model::getInstance($labelField, $moduleModel);
-									$label.= $row[$fieldModel->column]." ";
+									$label .= $row[$fieldModel->column] . " ";
 								}
 								$record['label'] = decode_html($label);
 								$result[] = $record;
@@ -120,5 +122,4 @@ class CustomerPortal_SearchRecords extends CustomerPortal_API_Abstract {
 			return $response;
 		}
 	}
-
 }

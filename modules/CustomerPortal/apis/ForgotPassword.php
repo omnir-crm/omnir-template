@@ -8,9 +8,11 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract {
+class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract
+{
 
-	function process(CustomerPortal_API_Request $request) {
+	function process(CustomerPortal_API_Request $request)
+	{
 		global $adb, $PORTAL_URL, $current_user;
 		$userId = $this->getCurrentPortalUser();
 		$user = new Users();
@@ -20,6 +22,7 @@ class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract {
 		$neutralResponse = new CustomerPortal_API_Response(); // set this to false in case you need specific response.
 		$neutralResponse->setResult(vtranslate('LBL_MAIL_SENT', 'HelpDesk'));
 
+		$password = '';
 		$response = new CustomerPortal_API_Response();
 		$mailid = $request->get('email');
 		$current_date = date("Y-m-d");
@@ -37,7 +40,7 @@ class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract {
 			$isActive = $adb->query_result($res, 0, 'isactive');
 			$support_end_date = $adb->query_result($res, 0, 'support_end_date');
 
-			if ($isActive && ($support_end_date >= $current_date || $support_end_date == null )) {
+			if ($isActive && ($support_end_date >= $current_date || $support_end_date == null)) {
 				$moduleName = 'Contacts';
 				global $HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME;
 				$user_name = $adb->query_result($res, 0, 'user_name');
@@ -52,14 +55,14 @@ class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract {
 					$adb->pquery($sql, $params);
 				}
 
-				$portalURL = vtranslate('Please ', $moduleName).'<a href="'.$PORTAL_URL.'" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">'.vtranslate('click here', $moduleName).'</a>';
+				$portalURL = vtranslate('Please ', $moduleName) . '<a href="' . $PORTAL_URL . '" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">' . vtranslate('click here', $moduleName) . '</a>';
 				$contents = '<table><tr><td>
-								<strong>Dear '.$adb->query_result($res, 0, 'firstname')." ".$adb->query_result($res, 0, 'lastname').'</strong><br></td></tr><tr>
-								<td>'.vtranslate('Here is your self service portal login details:', $moduleName).'</td></tr><tr><td align="center"><br><table style="border:2px solid rgb(180,180,179);background-color:rgb(226,226,225);" cellspacing="0" cellpadding="10" border="0" width="75%"><tr>
-								<td><br>'.vtranslate('User ID').' : <font color="#990000"><strong><a target="_blank">'.$user_name.'</a></strong></font></td></tr><tr>
-								<td>'.vtranslate('Password').' : <font color="#990000"><strong>'.$password.'</strong></font></td></tr><tr>
-								<td align="center"><strong>'.$portalURL.'</strong></td>
-								</tr></table><br></td></tr><tr><td><strong>NOTE: </strong>'.vtranslate('We suggest you to change your password after logging in first time').'.<br>
+								<strong>Dear ' . $adb->query_result($res, 0, 'firstname') . " " . $adb->query_result($res, 0, 'lastname') . '</strong><br></td></tr><tr>
+								<td>' . vtranslate('Here is your self service portal login details:', $moduleName) . '</td></tr><tr><td align="center"><br><table style="border:2px solid rgb(180,180,179);background-color:rgb(226,226,225);" cellspacing="0" cellpadding="10" border="0" width="75%"><tr>
+								<td><br>' . vtranslate('User ID') . ' : <font color="#990000"><strong><a target="_blank">' . $user_name . '</a></strong></font></td></tr><tr>
+								<td>' . vtranslate('Password') . ' : <font color="#990000"><strong>' . $password . '</strong></font></td></tr><tr>
+								<td align="center"><strong>' . $portalURL . '</strong></td>
+								</tr></table><br></td></tr><tr><td><strong>NOTE: </strong>' . vtranslate('We suggest you to change your password after logging in first time') . '.<br>
 							</td></tr></table>';
 
 				$subject = 'Customer Portal Login Details';
@@ -72,7 +75,7 @@ class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract {
 				}
 				$response->setResult($ret_msg);
 			} else if ($isActive && $support_end_date <= $current_date) {
-				if (!$neutralResponse) throw new Exception('Access to the portal was disabled on '.$support_end_date, 1413);
+				if (!$neutralResponse) throw new Exception('Access to the portal was disabled on ' . $support_end_date, 1413);
 			} else if ($isActive == 0) {
 				if (!$neutralResponse) throw new Exception('Portal access has not been enabled for this account.', 1414);
 			}
@@ -83,12 +86,14 @@ class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract {
 		return $neutralResponse ? $neutralResponse : $response;
 	}
 
-	function authenticatePortalUser($username, $password) {
+	function authenticatePortalUser($username, $password)
+	{
 		// always return true
 		return true;
 	}
 
-	public function getCurrentPortalUser() {
+	public function getCurrentPortalUser()
+	{
 		$db = PearDatabase::getInstance();
 
 		$result = $db->pquery("SELECT prefvalue FROM vtiger_customerportal_prefs WHERE prefkey = 'userid' AND tabid = 0", array());
@@ -97,5 +102,4 @@ class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract {
 		}
 		return false;
 	}
-
 }

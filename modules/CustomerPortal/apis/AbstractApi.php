@@ -8,47 +8,57 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-abstract class CustomerPortal_API_Abstract {
+abstract class CustomerPortal_API_Abstract
+{
 
 	private $activeUser = false;
 	private $activeCustomer = false;
 	protected $resolvedValueCache = array();
 
-	protected function initActiveUser($user) {
+	protected function initActiveUser($user)
+	{
 		$this->activeUser = $user;
 	}
 
-	protected function hasActiveUser() {
+	protected function hasActiveUser()
+	{
 		$user = $this->getActiveUser();
 		return ($user !== false);
 	}
 
-	protected function setActiveUser($user) {
+	protected function setActiveUser($user)
+	{
 		$this->initActiveUser($user);
 	}
 
-	public function getActiveUser() {
+	public function getActiveUser()
+	{
 		return $this->activeUser;
 	}
 
-	protected function initActiveCustomer($customer) {
+	protected function initActiveCustomer($customer)
+	{
 		$this->activeCustomer = $customer;
 	}
 
-	protected function hasActiveCustomer() {
+	protected function hasActiveCustomer()
+	{
 		$customer = $this->getActiveCustomer();
 		return ($customer !== false);
 	}
 
-	protected function setActiveCustomer($customer) {
+	protected function setActiveCustomer($customer)
+	{
 		$this->initActiveCustomer($customer);
 	}
 
-	protected function getActiveCustomer() {
+	protected function getActiveCustomer()
+	{
 		return $this->activeCustomer;
 	}
 
-	function authenticatePortalUser($username, $password) {
+	function authenticatePortalUser($username, $password)
+	{
 		global $adb;
 		$current_date = date("Y-m-d");
 		$sql = "SELECT id, user_name, user_password,last_login_time, isactive, support_start_date, support_end_date, cryptmode FROM vtiger_portalinfo
@@ -63,21 +73,25 @@ abstract class CustomerPortal_API_Abstract {
 
 		$isAuthenticated = false;
 		if ($num_rows > 0) {
+			$customerId = null;
+			$isActive = 0;
+			$support_end_date = null;
+			$userName = '';
 			for ($i = 0; $i < $num_rows; ++$i) {
-				$customerId = $adb->query_result($result, $i, 'id');
+				$tempCustomerId = $adb->query_result($result, $i, 'id');
 				if (Vtiger_Functions::compareEncryptedPassword($password, $adb->query_result($result, $i, 'user_password'), $adb->query_result($result, $i, 'cryptmode'))) {
+					$customerId = $tempCustomerId;
+					$isActive = $adb->query_result($result, $i, 'isactive');
+					$support_end_date = $adb->query_result($result, $i, 'support_end_date');
+					$userName = $adb->query_result($result, $i, 'user_name');
 					break;
-				} else {
-					$customerId = null;
 				}
 			}
-			$isActive = $adb->query_result($result, $i, 'isactive');
+
 			if ($customerId) {
-				$support_end_date = $adb->query_result($result, $i, 'support_end_date');
 				if ($isActive && ($support_end_date >= $current_date || $support_end_date == null)) {
 					$current_customer = CRMEntity::getInstance('Contacts');
 					$current_customer->id = $customerId;
-					$userName = $adb->query_result($result, $i, 'user_name');
 					$current_customer->username = $userName;
 					$this->setActiveCustomer($current_customer);
 
@@ -87,23 +101,25 @@ abstract class CustomerPortal_API_Abstract {
 					$current_user->retrieveCurrentUserInfoFromFile($userid);
 					$this->setActiveUser($current_user);
 					$isAuthenticated = true;
+				} else if ($isActive && $support_end_date <= $current_date) {
+					throw new Exception("Access to the portal was disabled on " . $support_end_date, 1413);
+				} else if ($isActive == 0) {
+					throw new Exception("Portal access has not been enabled for this account.", 1414);
 				}
-			} else if ($isActive && $support_end_date <= $current_date) {
-				throw new Exception("Access to the portal was disabled on ".$support_end_date, 1413);
-			} else if ($isActive == 0) {
-				throw new Exception("Portal access has not been enabled for this account.", 1414);
 			}
 		}
 		return $isAuthenticated;
 	}
 
-	protected function getParent($contactId) {
+	protected function getParent($contactId)
+	{
 		$sql = sprintf("SELECT account_id FROM Contacts WHERE id = '%s';", $contactId);
 		$result = vtws_query($sql, $this->getActiveUser());
 		return $result[0]['account_id'];
 	}
 
-	protected function relatedRecordIds($module, $moduleLabel, $parentId = null) {
+	protected function relatedRecordIds($module, $moduleLabel, $parentId = null)
+	{
 		global $adb, $log;
 		$relatedIds = array();
 		$mode = CustomerPortal_Settings_Utils::getDefaultMode($module);
@@ -132,7 +148,8 @@ abstract class CustomerPortal_API_Abstract {
 		return $relatedIds;
 	}
 
-	protected function isRecordAccessible($recordId, $module = null, $moduleLabel = null) {
+	protected function isRecordAccessible($recordId, $module = null, $moduleLabel = null)
+	{
 		global $adb;
 
 		if (empty($module)) {
@@ -152,7 +169,8 @@ abstract class CustomerPortal_API_Abstract {
 		}
 	}
 
-	protected function isFaqPublished($recordId) {
+	protected function isFaqPublished($recordId)
+	{
 		$sql = sprintf('SELECT faqstatus FROM %s WHERE id=\'%s\';', 'Faq', $recordId);
 		$result = vtws_query($sql, $this->getActiveUser());
 		if ($result[0]['faqstatus'] == 'Published') {
@@ -161,5 +179,4 @@ abstract class CustomerPortal_API_Abstract {
 			return false;
 		}
 	}
-
 }

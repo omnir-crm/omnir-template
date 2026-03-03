@@ -8,9 +8,11 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract {
+class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract
+{
 
-	function process(CustomerPortal_API_Request $request) {
+	function process(CustomerPortal_API_Request $request)
+	{
 		$response = new CustomerPortal_API_Response();
 		$current_user = $this->getActiveUser();
 		$db = PearDatabase::getInstance();
@@ -32,10 +34,10 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract {
 			//validate filter fields with portal settings
 			$activeFields = CustomerPortal_Utils::getActiveFields($module);
 			if ($fieldsArray !== null) {
-				if(!is_array($fieldsArray))$fieldsArray=array();
+				if (!is_array($fieldsArray)) $fieldsArray = array();
 				foreach ($fieldsArray as $key => $value) {
 					if (!in_array($key, $activeFields)) {
-						throw new Exception($key." is not accessible.", 1412);
+						throw new Exception($key . " is not accessible.", 1412);
 						exit;
 					}
 				}
@@ -45,13 +47,19 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract {
 			if (empty($mode)) {
 				$mode = CustomerPortal_Settings_Utils::getDefaultMode($module);
 			}
+			$groupConditionsBy = $request->get('groupConditions');
+			if (empty($groupConditionsBy)) {
+				$groupConditionsBy = 'AND';
+			}
+			$moduleLabel = CustomerPortal_Utils::getRelatedModuleLabel($module);
+			$parentId = null;
+
 			if ($mode == 'all' && in_array($module, array('Products', 'Services'))) {
 				$countSql = sprintf('SELECT count(*) FROM %s;', $module);
 				$countResult = vtws_query($countSql, $current_user);
 				$count = $countResult[0]['count'];
 			} else {
 				//setting parentId based on mode
-				$parentId = null;
 				if ($mode == 'mine') {
 					$parentId = $contactWebserviceId;
 				} else if ($mode == 'all') {
@@ -60,24 +68,21 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract {
 							$parentId = $accountId;
 						else
 							$parentId = $contactWebserviceId;
-					}
-					else {
+					} else {
 						$parentId = $contactWebserviceId;
 					}
 				}
-				$groupConditionsBy = $request->get('groupConditions');
-				if (empty($groupConditionsBy))
-					$groupConditionsBy = 'AND';
+
 				$countSql = sprintf('SELECT count(*) FROM %s', $module);
 
 				if (!empty($fieldsArray)) {
 					$countSql = sprintf('SELECT count(*) FROM %s WHERE ', $module);
 					foreach ($fieldsArray as $key => $value) {
-						$countSql.= $key.'=\''.$value."' ".$groupConditionsBy." ";
+						$countSql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
 					}
 					$countSql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $countSql);
 				}
-				$moduleLabel = CustomerPortal_Utils::getRelatedModuleLabel($module);
+
 				$countResult = vtws_query_related($countSql, $parentId, $moduleLabel, $current_user);
 				$count = isset($countResult[0]) ? $countResult[0]['count'] : 0;
 			}
@@ -90,7 +95,7 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract {
 				if (!empty($fieldsArray)) {
 					$sql = sprintf('SELECT %s FROM %s WHERE ', $fields, $module);
 					foreach ($fieldsArray as $key => $value) {
-						$sql.= $key.'=\''.$value."' ".$groupConditionsBy." ";
+						$sql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
 					}
 					$sql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $sql);
 				} else {
@@ -98,7 +103,7 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract {
 				}
 				$filterClause = sprintf(" LIMIT %s,%s", $i * $pageLimit, $pageLimit);
 				if ($mode == 'all' && in_array($module, array('Products', 'Services'))) {
-					$result = vtws_query($sql.' '.$filterClause.';', $current_user);
+					$result = vtws_query($sql . ' ' . $filterClause . ';', $current_user);
 				} else {
 					$result = vtws_query_related($sql, $parentId, $moduleLabel, $current_user, $filterClause);
 				}
@@ -111,5 +116,4 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract {
 			return $response;
 		}
 	}
-
 }

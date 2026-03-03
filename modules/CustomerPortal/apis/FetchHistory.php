@@ -8,9 +8,11 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_FetchHistory extends CustomerPortal_FetchRecord {
+class CustomerPortal_FetchHistory extends CustomerPortal_FetchRecord
+{
 
-	function process(CustomerPortal_API_Request $request) {
+	function process(CustomerPortal_API_Request $request)
+	{
 		global $adb;
 		$response = new CustomerPortal_API_Response();
 		$current_user = $this->getActiveUser();
@@ -68,7 +70,7 @@ class CustomerPortal_FetchHistory extends CustomerPortal_FetchRecord {
 
 			$sql = 'SELECT vtiger_modtracker_basic.* FROM vtiger_modtracker_basic
 		            INNER JOIN vtiger_crmentity ON vtiger_modtracker_basic.crmid = vtiger_crmentity.crmid WHERE 
-                    vtiger_modtracker_basic.module = ? AND vtiger_crmentity.deleted = ? AND vtiger_modtracker_basic.crmid IN ('.generateQuestionMarks($recordIds).')
+                    vtiger_modtracker_basic.module = ? AND vtiger_crmentity.deleted = ? AND vtiger_modtracker_basic.crmid IN (' . generateQuestionMarks($recordIds) . ')
                     ORDER BY changedon DESC';
 
 			$params = array();
@@ -90,17 +92,26 @@ class CustomerPortal_FetchHistory extends CustomerPortal_FetchRecord {
 				$status = $row['status'];
 
 				switch ($status) {
-					case ModTracker::$UPDATED: $statuslabel = 'updated';
+					case ModTracker::$UPDATED:
+						$statuslabel = 'updated';
 						break;
-					case ModTracker::$DELETED: $statuslabel = 'deleted';
+					case ModTracker::$DELETED:
+						$statuslabel = 'deleted';
 						break;
-					case ModTracker::$CREATED: $statuslabel = 'created';
+					case ModTracker::$CREATED:
+						$statuslabel = 'created';
 						break;
-					case ModTracker::$RESTORED: $statuslabel = 'restored';
+					case ModTracker::$RESTORED:
+						$statuslabel = 'restored';
 						break;
-					case ModTracker::$LINK: $statuslabel = 'link';
+					case ModTracker::$LINK:
+						$statuslabel = 'link';
 						break;
-					case ModTracker::$UNLINK: $statuslabel = 'unlink';
+					case ModTracker::$UNLINK:
+						$statuslabel = 'unlink';
+						break;
+					default:
+						$statuslabel = 'unknown';
 						break;
 				}
 
@@ -118,8 +129,8 @@ class CustomerPortal_FetchHistory extends CustomerPortal_FetchRecord {
 			if (!empty($orderedIds)) {
 				$activeFields = CustomerPortal_Utils::getActiveFields($module);
 				$sql = 'SELECT vtiger_modtracker_detail.* FROM vtiger_modtracker_detail';
-				$sql .= ' WHERE id IN ('.generateQuestionMarks($orderedIds).') AND 
-                          fieldname IN('.generateQuestionMarks($activeFields).') ORDER BY id DESC LIMIT ?,?';
+				$sql .= ' WHERE id IN (' . generateQuestionMarks($orderedIds) . ') AND 
+                          fieldname IN(' . generateQuestionMarks($activeFields) . ') ORDER BY id DESC LIMIT ?,?';
 
 				$params = $orderedIds;
 				foreach ($activeFields as $field) {
@@ -165,7 +176,8 @@ class CustomerPortal_FetchHistory extends CustomerPortal_FetchRecord {
 		return $response;
 	}
 
-	protected function resolveReferences(&$items, $module, $user) {
+	protected function resolveReferences(&$items, $module, $user)
+	{
 		$ids = array();
 
 		foreach ($items as $item) {
@@ -218,9 +230,9 @@ class CustomerPortal_FetchHistory extends CustomerPortal_FetchRecord {
 		}
 	}
 
-	protected function fetchLabelForUserId($id, $user) {
+	protected function fetchLabelForUserId($id, $user)
+	{
 		$label = trim(vtws_getName($id, $user));
 		return array('value' => $id, 'label' => $label);
 	}
-
 }

@@ -8,11 +8,14 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_FetchReferenceRecords extends CustomerPortal_API_Abstract {
+class CustomerPortal_FetchReferenceRecords extends CustomerPortal_API_Abstract
+{
 
-	function process(CustomerPortal_API_Request $request) {
+	function process(CustomerPortal_API_Request $request)
+	{
 		$response = new CustomerPortal_API_Response();
 		$current_user = $this->getActiveUser();
+		$result = array();
 
 		if ($current_user) {
 			$customerId = $this->getActiveCustomer()->id;
@@ -68,7 +71,7 @@ class CustomerPortal_FetchReferenceRecords extends CustomerPortal_API_Abstract {
 			foreach ($result as $value) {
 				$record = array();
 				foreach ($labelFieldsArray as $labelField) {
-					$record['label'].= ' ' . decode_html($value[$labelField]);
+					$record['label'] .= ' ' . decode_html($value[$labelField]);
 					$record['id'] = decode_html($value['id']);
 				}
 				$referenceRecords[] = $record;
@@ -77,5 +80,4 @@ class CustomerPortal_FetchReferenceRecords extends CustomerPortal_API_Abstract {
 		}
 		return $response;
 	}
-
 }
