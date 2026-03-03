@@ -18,6 +18,8 @@ composer
 phpstan-output.json
 *.tar.gz
 *.sql
+!vtiger_base_setup.sql
+!vtiger_base_setup_utf8.sql
 
 # Environment secrets
 .env
