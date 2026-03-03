@@ -8,16 +8,18 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_Utils {
+class CustomerPortal_Utils
+{
 
-	static function getImageDetails($recordId, $module) {
+	static function getImageDetails($recordId, $module)
+	{
 		global $adb;
 		$sql = "SELECT vtiger_attachments.*, vtiger_crmentity.setype FROM vtiger_attachments
 					INNER JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid
 					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_attachments.attachmentsid
 						WHERE vtiger_crmentity.setype = ? and vtiger_seattachmentsrel.crmid = ?";
 
-		$result = $adb->pquery($sql, array($module.' Image', $recordId));
+		$result = $adb->pquery($sql, array($module . ' Image', $recordId));
 
 		$imageId = $adb->query_result($result, 0, 'attachmentsid');
 		$imagePath = $adb->query_result($result, 0, 'path');
@@ -29,7 +31,7 @@ class CustomerPortal_Utils {
 			$imageDetails[] = array(
 				'id' => $imageId ? $imageId : '',
 				'orgname' => $imageOriginalName ? $imageOriginalName : '',
-				'path' => $imagePath.$imageId,
+				'path' => $imagePath . $imageId,
 				'name' => $imageName ? $imageName : '',
 				'type' => $imageType
 			);
@@ -41,9 +43,10 @@ class CustomerPortal_Utils {
 			return self::getEncodedImage($imageDetails[0]);
 	}
 
-	static function getEncodedImage($imageDetails) {
+	static function getEncodedImage($imageDetails)
+	{
 		global $root_directory;
-		$image = $root_directory.'/'.$imageDetails['path'].'_'.$imageDetails['name'];
+		$image = $root_directory . '/' . $imageDetails['path'] . '_' . $imageDetails['name'];
 		$image_data = file_get_contents($image);
 		$encoded_image = base64_encode($image_data);
 		$encodedImageData = array();
@@ -52,7 +55,8 @@ class CustomerPortal_Utils {
 		return $encodedImageData;
 	}
 
-	public static function getActiveModules() {
+	public static function getActiveModules()
+	{
 		$activeModules = Vtiger_Cache::get('CustomerPortal', 'activeModules'); // need to flush cache when modules updated at CRM settings
 
 		if (empty($activeModules)) {
@@ -62,7 +66,7 @@ class CustomerPortal_Utils {
 			$sqlResult = $adb->pquery($sql, array(0, 1));
 
 			for ($i = 0; $i < $adb->num_rows($sqlResult); $i++) {
-				if(!is_array($activeModules))$activeModules = array();
+				if (!is_array($activeModules)) $activeModules = array();
 				$activeModules[] = $adb->query_result($sqlResult, $i, 'name');
 			}
 			//Checking if module is active at Module Manager 
@@ -77,7 +81,8 @@ class CustomerPortal_Utils {
 		return $activeModules;
 	}
 
-	public static function isModuleActive($module) {
+	public static function isModuleActive($module)
+	{
 		$activeModules = self::getActiveModules();
 		$defaultAllowedModules = array("ModComments", "History", "Contacts", "Accounts");
 
@@ -89,7 +94,8 @@ class CustomerPortal_Utils {
 		return false;
 	}
 
-	static function resolveRecordValues(&$record, $user = null, $ignoreUnsetFields = false) {
+	static function resolveRecordValues(&$record, $user = null, $ignoreUnsetFields = false)
+	{
 		$userTypeFields = array('assigned_user_id', 'creator', 'userid', 'created_user_id', 'modifiedby', 'folderid');
 
 		if (empty($record) || !$user)
@@ -125,8 +131,9 @@ class CustomerPortal_Utils {
 		return $record;
 	}
 
-	static function getRelatedModuleLabel($relatedModule, $parentModule = "Contacts") {
-		$relatedModuleLabel = Vtiger_Cache::get('CustomerPortal', $relatedModule.':label');
+	static function getRelatedModuleLabel($relatedModule, $parentModule = "Contacts")
+	{
+		$relatedModuleLabel = Vtiger_Cache::get('CustomerPortal', $relatedModule . ':label');
 
 		if (empty($relatedModuleLabel)) {
 			global $adb;
@@ -141,13 +148,14 @@ class CustomerPortal_Utils {
 
 			if ($adb->num_rows($sqlResult) > 0) {
 				$relatedModuleLabel = $adb->query_result($sqlResult, 0, 'label');
-				Vtiger_Cache::set('CustomerPortal', $relatedModule.':label', $relatedModuleLabel);
+				Vtiger_Cache::set('CustomerPortal', $relatedModule . ':label', $relatedModuleLabel);
 			}
 		}
 		return $relatedModuleLabel;
 	}
 
-	static function getActiveFields($module, $withPermissions = false) {
+	static function getActiveFields($module, $withPermissions = false)
+	{
 		$activeFields = Vtiger_Cache::get('CustomerPortal', 'activeFields'); // need to flush cache when fields updated at CRM settings
 
 		if (empty($activeFields)) {
@@ -159,7 +167,7 @@ class CustomerPortal_Utils {
 			for ($i = 0; $i < $num_rows; $i++) {
 				$retrievedModule = $adb->query_result($sqlResult, $i, 'name');
 				$fieldInfo = $adb->query_result($sqlResult, $i, 'fieldinfo');
-				if(!is_array($activeFields))$activeFields = array();
+				if (!is_array($activeFields)) $activeFields = array();
 				$activeFields[$retrievedModule] = $fieldInfo;
 			}
 			Vtiger_Cache::set('CustomerPortal', 'activeFields', $activeFields);
@@ -183,17 +191,20 @@ class CustomerPortal_Utils {
 		return $fields;
 	}
 
-	static function str_replace_last($search, $replace, $str) {
-		if (( $pos = strrpos($str, $search) ) !== false) {
+	static function str_replace_last($search, $replace, $str)
+	{
+		if (($pos = strrpos($str, $search)) !== false) {
 			$search_length = strlen($search);
 			$str = substr_replace($str, $replace, $pos, $search_length);
 		}
 		return $str;
 	}
 
-	static function isViewable($fieldName, $module) {
+	static function isViewable($fieldName, $module)
+	{
 		global $db;
 		$db = PearDatabase::getInstance();
+		$tabId = null;
 		$tabidSql = "SELECT tabid from vtiger_tab WHERE name = ?";
 		$tabidResult = $db->pquery($tabidSql, array($module));
 		if ($db->num_rows($tabidResult)) {
@@ -213,7 +224,8 @@ class CustomerPortal_Utils {
 		}
 	}
 
-	static function isReferenceType($fieldName, $describe) {
+	static function isReferenceType($fieldName, $describe)
+	{
 		$type = self::getFieldType($fieldName, $describe);
 
 		if ($type === 'reference') {
@@ -222,7 +234,8 @@ class CustomerPortal_Utils {
 		return false;
 	}
 
-	static function isOwnerType($fieldName, $describe) {
+	static function isOwnerType($fieldName, $describe)
+	{
 		$type = self::getFieldType($fieldName, $describe);
 
 		if ($type === 'owner') {
@@ -231,7 +244,8 @@ class CustomerPortal_Utils {
 		return false;
 	}
 
-	static function getFieldType($fieldName, $describe) {
+	static function getFieldType($fieldName, $describe)
+	{
 		$fields = $describe['fields'];
 
 		foreach ($fields as $field) {
@@ -242,7 +256,8 @@ class CustomerPortal_Utils {
 		return null;
 	}
 
-	static function getMandatoryFields($describe) {
+	static function getMandatoryFields($describe)
+	{
 
 		$fields = $describe["fields"];
 		$mandatoryFields = array();
@@ -254,7 +269,8 @@ class CustomerPortal_Utils {
 		return $mandatoryFields;
 	}
 
-	static function isModuleRecordCreatable($module) {
+	static function isModuleRecordCreatable($module)
+	{
 		global $db;
 		$db = PearDatabase::getInstance();
 		$recordPermissionQuery = "SELECT createrecord from vtiger_customerportal_tabs WHERE tabid=?";
@@ -263,7 +279,8 @@ class CustomerPortal_Utils {
 		return $createPermission;
 	}
 
-	static function isModuleRecordEditable($module) {
+	static function isModuleRecordEditable($module)
+	{
 		global $db;
 		$db = PearDatabase::getInstance();
 		$recordPermissionQuery = "SELECT editrecord from vtiger_customerportal_tabs WHERE tabid=?";
@@ -274,7 +291,8 @@ class CustomerPortal_Utils {
 
 	//Function to get all Ids when mode is set to published.
 
-	static function getAllRecordIds($module, $current_user) {
+	static function getAllRecordIds($module, $current_user)
+	{
 		$relatedIds = array();
 		$sql = sprintf('SELECT id FROM %s;', $module);
 		$result = vtws_query($sql, $current_user);
@@ -283,5 +301,4 @@ class CustomerPortal_Utils {
 		}
 		return $relatedIds;
 	}
-
 }

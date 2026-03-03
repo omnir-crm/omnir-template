@@ -8,12 +8,15 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class CustomerPortal_FetchLabelFields extends CustomerPortal_API_Abstract {
+class CustomerPortal_FetchLabelFields extends CustomerPortal_API_Abstract
+{
 
-	function process(CustomerPortal_API_Request $request) {
+	function process(CustomerPortal_API_Request $request)
+	{
 		$current_user = $this->getActiveUser();
 		$response = new CustomerPortal_API_Response();
 		global $adb;
+		$result = array();
 
 		if ($current_user) {
 			$sql = "SELECT tabid FROM vtiger_customerportal_tabs WHERE visible=? ";
@@ -32,5 +35,4 @@ class CustomerPortal_FetchLabelFields extends CustomerPortal_API_Abstract {
 		$response->setResult($result);
 		return $response;
 	}
-
 }
