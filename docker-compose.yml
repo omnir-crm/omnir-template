@@ -4,13 +4,13 @@ services:
     container_name: omnir_crm_app
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "${VT_PORT:-8080}:80"
     environment:
       - VT_DB_HOST=db
-      - VT_DB_NAME=vtiger_crm
-      - VT_DB_USER=vtiger_user
-      - VT_DB_PASSWORD=vtiger_password
-      - VT_SITE_URL=http://localhost:8080/
+      - VT_DB_NAME=${MYSQL_DATABASE}
+      - VT_DB_USER=${MYSQL_USER}
+      - VT_DB_PASSWORD=${MYSQL_PASSWORD}
+      - VT_SITE_URL=${VT_SITE_URL:-http://localhost:8080/}
     volumes:
       - .:/var/www/html
     depends_on:
@@ -29,14 +29,14 @@ services:
     restart: unless-stopped
     command: --character-set-server=utf8 --collation-server=utf8_general_ci --sql-mode="ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
     environment:
-      - MYSQL_ROOT_PASSWORD=root_password
-      - MYSQL_DATABASE=vtiger_crm
-      - MYSQL_USER=vtiger_user
-      - MYSQL_PASSWORD=vtiger_password
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ./db-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
