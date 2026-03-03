@@ -3,5 +3,6 @@ db-data
 .claude
 _bmad
 .dockerignore
-.gitignore
-docker-compose.yml
+*.tar
+*.sql
+!vtiger_base_setup.sql

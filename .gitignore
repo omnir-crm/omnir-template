@@ -1,26 +1,20 @@
-# Local data (Managed by Docker volumes)
-db-data/
-vtiger-data/
+vendor/*
+!vendor/.htaccess
+.vscode/*
 
-# The large installer file
-*.tar
-*.zip
-
-# vTiger internal dynamic files (if mapped locally)
+# vTiger generated and dynamic files
+cache/
 logs/
 storage/
-cache/
-test/
-user_privileges/
-
-# Security & Backups
+db-data/
 config.inc.php
-config_override.php
+config.csrf-secret.php
+test/templates_c/
+user_privileges/user_privileges_*.php
+user_privileges/sharing_privileges_*.php
+!user_privileges/user_privileges_1.php
+!user_privileges/sharing_privileges_1.php
+composer
+phpstan-output.json
+*.tar.gz
 *.sql
-
-# ALLOW the base setup file specifically
-!vtiger_base_setup.sql
-
-# Windows System Files
-[Dd]esktop.ini
-Thumbs.db
