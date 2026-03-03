@@ -1,4 +1,5 @@
 <?php
+
 /*********************************************************************************
  * The contents of this file are subject to the SugarCRM Public License Version 1.1.2
  * ("License"); You may not use this file except in compliance with the 
@@ -11,7 +12,7 @@
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.;
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
-********************************************************************************/
+ ********************************************************************************/
 
 // Adjust error_reporting favourable to deployment.
 version_compare(PHP_VERSION, '5.5.0') <= 0 ? error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED & E_ERROR) : error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED  & E_ERROR & ~E_STRICT); // PRODUCTION
@@ -23,7 +24,7 @@ include('vtigerversion.php');
 
 // more than 8MB memory needed for graphics
 // memory limit default value = 64M
-ini_set('memory_limit','512M');
+ini_set('memory_limit', '512M');
 
 // show or hide calendar, world clock, calculator, chat and CKEditor 
 // Do NOT remove the quotes if you set these to false! 
@@ -54,7 +55,7 @@ $dbconfig['db_status'] = '_DB_STAT_';
 
 // TODO: test if port is empty
 // TODO: set db_hostname dependending on db_type
-$dbconfig['db_hostname'] = $dbconfig['db_server'].$dbconfig['db_port'];
+$dbconfig['db_hostname'] = $dbconfig['db_server'] . $dbconfig['db_port'];
 
 // log_sql default value = false
 $dbconfig['log_sql'] = false;
@@ -82,7 +83,7 @@ $host_name = $dbconfig['db_hostname'];
 $site_URL = '_SITE_URL_';
 
 // url for customer portal (Example: http://vtiger.com/portal)
-$PORTAL_URL = $site_URL.'/customerportal';
+$PORTAL_URL = $site_URL . '/customerportal';
 // root directory path
 $root_directory = '_VT_ROOTDIR_';
 
@@ -100,7 +101,7 @@ $upload_dir = '_VT_UPLOADDIR_';
 
 // maximum file size for uploaded files in bytes also used when uploading import files
 // upload_maxsize default value = 3000000
-$upload_maxsize = 3145728;//3MB
+$upload_maxsize = 3145728; //3MB
 
 // flag to allow export functionality
 // 'all' to allow anyone to use exports 
@@ -118,6 +119,10 @@ $list_max_entries_per_page = '20';
 
 // history_max_viewed default value = 5
 $history_max_viewed = '5';
+
+// Maximum number of scheduled workflows
+$max_scheduled_workflows = 10;
+
 
 // default_action default value = index
 $default_action = 'index';
@@ -168,8 +173,8 @@ $php_max_execution_time = 0;
 $default_timezone = 'UTC';
 
 /** If timezone is configured, try to set it */
-if(isset($default_timezone) && function_exists('date_default_timezone_set')) {
-	@date_default_timezone_set($default_timezone);
+if (isset($default_timezone) && function_exists('date_default_timezone_set')) {
+      @date_default_timezone_set($default_timezone);
 }
 
 //Set the default layout 
@@ -179,4 +184,3 @@ $default_layout = 'v7';
 $maxListFieldsSelectionSize = 15;
 
 include_once 'config.security.php';
-?>
