@@ -210,6 +210,7 @@ function SMSTask($){
 
 					fillSelectBox('task_phonefields', modules, moduleName, function(e){return e['type']['name']=='phone';});
 					$('#task-phonefields-busyicon').hide();
+					$('#taREDACTED_API_KEY').hide();
 					$('#task_phonefields').show();
 					$('#task_phonefields').change(function(){
 						var input = $($('#save_recepient').get());
